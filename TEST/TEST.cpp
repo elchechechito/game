@@ -293,10 +293,10 @@ const int WALKING_ANIMATION_FRAMES = 4;
 //	SDL_Quit();
 //}
 
+
 int main(int argc, char* args[])
 {
 	loadSDL sdl;
-	
 	//Start up SDL and create window
 	if (!sdl.init())
 	{

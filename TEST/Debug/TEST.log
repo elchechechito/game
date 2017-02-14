@@ -1,5 +1,5 @@
-﻿  loadSDL.cpp
-  TEST.cpp
+﻿  TEST.cpp
+  loadSDL.cpp
   Generating Code...
-  TEST.vcxproj -> C:\Users\jose.ramirez\Desktop\TEST\TEST\TEST\Debug\TEST.exe
-  TEST.vcxproj -> C:\Users\jose.ramirez\Desktop\TEST\TEST\TEST\Debug\TEST.pdb (Partial PDB)
+  TEST.vcxproj -> C:\Users\jose.ramirez\Desktop\TEST\TEST\game\Debug\TEST.exe
+  TEST.vcxproj -> C:\Users\jose.ramirez\Desktop\TEST\TEST\game\Debug\TEST.pdb (Partial PDB)
