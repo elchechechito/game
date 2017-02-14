@@ -48,8 +48,8 @@ public:
 	Texture gSpriteSheetTexture;
 	
 	//screen size
-	int SCREEN_WIDTH = 450;
-	int SCREEN_HEIGHT = 600;
+	const static int SCREEN_WIDTH = 450;
+	const static int SCREEN_HEIGHT = 600;
 
 	SDL_Rect gSpriteClips[4];
 
