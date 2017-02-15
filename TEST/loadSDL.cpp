@@ -116,6 +116,97 @@ bool loadSDL::loadMedia()
 		gSpriteClips[3].h = 205;
 	}
 
+	gTexturePuyo = loadTexture("img/puyoSprite2.png");
+
+	//Load sprite sheet texture
+	if (gTexturePuyo.texture == NULL)
+	{
+		printf("No se cargo la imagen de puyo!\n");
+		success = false;
+	}
+	else
+	{
+		//cargar puyos rojos
+		for (int i = 0; i < 17; i++)
+		{
+			//Set sprite clips
+			redPuyoSprite[i].x = i * 32;
+			redPuyoSprite[i].y = 0;
+			redPuyoSprite[i].w = 33;
+			redPuyoSprite[i].h = 31;
+		}
+
+		//cargar puyos verdes
+		for (int i = 0; i < 17; i++)
+		{
+			//Set sprite clips
+			greenPuyoSprite[i].x = i * 32;
+			greenPuyoSprite[i].y = 40;
+			greenPuyoSprite[i].w = 33;
+			greenPuyoSprite[i].h = 31;
+		}
+
+		//cargar puyos azul
+		for (int i = 0; i < 17; i++)
+		{
+			//Set sprite clips
+			bluePuyoSprite[i].x = i * 32;
+			bluePuyoSprite[i].y = 79;
+			bluePuyoSprite[i].w = 33;
+			bluePuyoSprite[i].h = 31;
+		}
+
+		//cargar puyos amarillos
+		for (int i = 0; i < 17; i++)
+		{
+			//Set sprite clips
+			yellowPuyoSprite[i].x = i * 32;
+			yellowPuyoSprite[i].y = 120;
+			yellowPuyoSprite[i].w = 33;
+			yellowPuyoSprite[i].h = 32;
+		}
+
+		//cargar puyos morados
+		for (int i = 0; i < 17; i++)
+		{
+			//Set sprite clips
+			purplePuyoSprite[i].x = i * 32;
+			purplePuyoSprite[i].y = 160;
+			purplePuyoSprite[i].w = 33;
+			purplePuyoSprite[i].h = 32;
+		}
+
+		//cargar puyos rosados
+		for (int i = 0; i < 17; i++)
+		{
+			//Set sprite clips
+			pinkPuyoSprite[i].x = i * 32;
+			pinkPuyoSprite[i].y = 200;
+			pinkPuyoSprite[i].w = 33;
+			pinkPuyoSprite[i].h = 31;
+		}
+
+	}
+
+	gTextureBackground = loadTexture("img/background.png");
+
+	//Load sprite sheet texture
+	if (gTextureBackground.texture == NULL)
+	{
+		printf("No se cargo el fondo!\n");
+		success = false;
+	}
+	else
+	{
+		for (int i = 0; i < 4; i++)
+		{
+			backgroundSprite[i].x = i * 260;
+			backgroundSprite[i].y = 0;
+			backgroundSprite[i].w = 255;
+			backgroundSprite[i].h = 195;
+		}
+	}
+
 	return success;
 }
 
@@ -135,7 +226,7 @@ loadSDL::Texture loadSDL::loadTexture(std::string path)
 	else
 	{
 		//
-		SDL_SetColorKey(loadedSurface, SDL_TRUE, SDL_MapRGB(loadedSurface->format, 255, 0, 0));
+		SDL_SetColorKey(loadedSurface, SDL_TRUE, SDL_MapRGB(loadedSurface->format, 0, 255, 255));
 
 		//Create texture from surface pixels
 		newTexture = SDL_CreateTextureFromSurface(gRenderer, loadedSurface);
@@ -158,16 +249,21 @@ loadSDL::Texture loadSDL::loadTexture(std::string path)
 	return loadTexture;
 }
 
-void loadSDL::render(int x, int y, loadSDL::Texture renderTexture, SDL_Rect * clip)
+void loadSDL::render(int x, int y, loadSDL::Texture renderTexture, SDL_Rect * clip, bool screenSize = false)
 {
 	//Set rendering space and render to screen
 	SDL_Rect renderQuad = { x, y, renderTexture.textureWidth, renderTexture.textureHeight };
 	
 	//Set clip rendering dimensions
-	if (clip != NULL)
+	if (clip != NULL && !screenSize)
 	{
 		renderQuad.w = clip->w;
 		renderQuad.h = clip->h;
+	}
+	else if (screenSize)
+	{
+		renderQuad.w = SCREEN_WIDTH;
+		renderQuad.h = SCREEN_HEIGHT;
 	}
 	
 	//Render to screen

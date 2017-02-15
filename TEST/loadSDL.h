@@ -30,7 +30,7 @@ public:
 	Texture loadTexture(std::string path);
 
 	//Renders texture at given point
-	void render(int x, int y, loadSDL::Texture renderTexture,SDL_Rect* clip = NULL);
+	void render(int x, int y, loadSDL::Texture renderTexture,SDL_Rect* clip, bool screenSize);
 
 	//The window we'll be rendering to
 	SDL_Window* gWindow = NULL;
@@ -40,18 +40,25 @@ public:
 
 	//Texture to load puyo
 	Texture gTexturePuyo;
+	SDL_Rect redPuyoSprite[17];
+	SDL_Rect greenPuyoSprite[17];
+	SDL_Rect bluePuyoSprite[17];
+	SDL_Rect yellowPuyoSprite[17];
+	SDL_Rect purplePuyoSprite[17];
+	SDL_Rect pinkPuyoSprite[17];
 
 	//Texture to load background
 	Texture gTextureBackground;
+	SDL_Rect backgroundSprite[5];
 
 	//Texture
 	Texture gSpriteSheetTexture;
 	
 	//screen size
-	const static int SCREEN_WIDTH = 450;
+	const static int SCREEN_WIDTH = 500;
 	const static int SCREEN_HEIGHT = 600;
-
+	
 	SDL_Rect gSpriteClips[4];
-
+		
 };
 
