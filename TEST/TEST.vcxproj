@@ -72,6 +72,10 @@
     <IncludePath>$(SOLUTIONDIR)\SDL2_image-devel-2.0.1-VC\SDL2_image-2.0.1\include;$(SOLUTIONDIR)\SDL2-devel-2.0.5-VC\SDL2-2.0.5\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(SOLUTIONDIR)\SDL2_image-devel-2.0.1-VC\SDL2_image-2.0.1\lib\x86;$(SOLUTIONDIR)\SDL2-devel-2.0.5-VC\SDL2-2.0.5\lib\x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>$(SOLUTIONDIR)SDL2_image-devel-2.0.1-VC\SDL2_image-2.0.1\include;$(SOLUTIONDIR)SDL2-devel-2.0.5-VC\SDL2-2.0.5\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SOLUTIONDIR)SDL2_image-devel-2.0.1-VC\SDL2_image-2.0.1\lib\x64;$(SOLUTIONDIR)SDL2-devel-2.0.5-VC\SDL2-2.0.5\lib\x64;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -80,7 +84,7 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>Console</SubSystem>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -92,7 +96,7 @@
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>C:\Users\jose.ramirez\Desktop\TEST\TEST\game\SDL2_image-devel-2.0.1-VC\SDL2_image-2.0.1\lib\x64;C:\Users\jose.ramirez\Desktop\TEST\TEST\game\SDL2-devel-2.0.5-VC\SDL2-2.0.5\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>SDL2.lib;SDL2_image.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -122,10 +126,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="board.cpp" />
+    <ClCompile Include="cheackbox.cpp" />
     <ClCompile Include="loadSDL.cpp" />
     <ClCompile Include="TEST.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="board.h" />
+    <ClInclude Include="cheackbox.h" />
     <ClInclude Include="loadSDL.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

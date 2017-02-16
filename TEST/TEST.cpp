@@ -7,8 +7,6 @@
 #include <time.h>
 #include "board.h"
 
-const int WALKING_ANIMATION_FRAMES = 4;
-
 int main(int argc, char* args[])
 {
 	loadSDL sdl;
@@ -78,27 +76,43 @@ int main(int argc, char* args[])
 					SDL_RenderDrawRect(sdl.gRenderer, &outlineRect);
 				}
 				
-				//print red puyos
+				//print the board
 				for (int y = 0; y < 16; y++)
 				{
 					for (int x = 0; x < 11; x++)
 					{
-						SDL_Rect* puyoClip = NULL; 
-
-						int randomPuyo = rand() % 100 > 50 ? 1 : 0;
-						switch (randomPuyo)
+						if (theBoard.cheackbox[y][x].isFree == false)
 						{
+							SDL_Rect* puyoClip = NULL;
+							int sprite = theBoard.cheackbox[y][x].sprite;
+
+							switch (theBoard.cheackbox[y][x].color)
+							{
 							case 0:
-								puyoClip = &sdl.redPuyoSprite[x];
+								puyoClip = &sdl.redPuyoSprite[sprite];
 								break;
 
 							case 1:
-								puyoClip = &sdl.bluePuyoSprite[x];
+								puyoClip = &sdl.greenPuyoSprite[sprite];
 								break;
-						}
-						
-						if (theBoard.cheackbox[y][x].isFree == true)
-						{
+
+							case 2:
+								puyoClip = &sdl.bluePuyoSprite[sprite];
+								break;
+
+							case 3:
+								puyoClip = &sdl.yellowPuyoSprite[sprite];
+								break;
+
+							case 4:
+								puyoClip = &sdl.purplePuyoSprite[sprite];
+								break;
+
+							case 5:
+								puyoClip = &sdl.pinkPuyoSprite[sprite];
+								break;
+							}
+
 							sdl.render(theBoard.cheackbox[y][x].box.x, theBoard.cheackbox[y][x].box.y, sdl.gTexturePuyo, puyoClip, false);
 						}												
 					}
@@ -106,17 +120,8 @@ int main(int argc, char* args[])
 				
 				//Update screen
 				SDL_RenderPresent(sdl.gRenderer);
+				SDL_Delay(1500);
 
-				SDL_Delay(200);
-
-				//Go to next frame
-				++frame;
-
-				//Cycle animation
-				if (frame / 4 >= WALKING_ANIMATION_FRAMES)
-				{
-					frame = 0;
-				}
 			}
 		}
 	}

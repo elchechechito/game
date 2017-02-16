@@ -13,19 +13,16 @@ board::board()
 			cheackbox[y][x].box.w = 33;
 			cheackbox[y][x].box.h = 31;
 
-			////Random background
-			int isFreeRandom = rand() % 100 > 50 ? 1 : 0;
-
-			if (isFreeRandom == 1)
+			if (x == 2)
 			{
 				cheackbox[y][x].isFree = false;
+				cheackbox[y][x].color = 5;
+				cheackbox[y][x].sprite = 3;
 			}
 			else
 			{
 				cheackbox[y][x].isFree = true;
 			}
-			
-
 		}
 	}
 }

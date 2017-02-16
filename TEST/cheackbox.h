@@ -10,5 +10,9 @@ public:
 	SDL_Rect box;
 
 	bool isFree;
+
+	int color;
+	int sprite;
+
 };
 
