@@ -51,14 +51,9 @@ public:
 	Texture gTextureBackground;
 	SDL_Rect backgroundSprite[5];
 
-	//Texture
-	Texture gSpriteSheetTexture;
-	
 	//screen size
 	const static int SCREEN_WIDTH = 500;
 	const static int SCREEN_HEIGHT = 600;
-	
-	SDL_Rect gSpriteClips[4];
 		
 };
 
