@@ -23,6 +23,8 @@ class board
 		void moveCheackbox(SDL_Event &e);
 
 		void turnPuyo();
+		void moveRight();
+		void moveLeft();
 
 };
 
