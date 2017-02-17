@@ -15,6 +15,7 @@ public:
 	int sprite;
 
 	bool isSelected;
+	bool isBase;
 
 };
 
