@@ -267,6 +267,8 @@ void board::turnPuyo()
 						cheackbox[y - 1][x].color;
 						cheackbox[y - 1][x].sprite;
 
+						break;
+
 					}
 					else if (cheackbox[y][x + 1].isFree)
 					{
@@ -304,6 +306,8 @@ void board::turnPuyo()
 						cheackbox[y][x + 1].isBase = false;
 						cheackbox[y][x + 1].color;
 						cheackbox[y][x + 1].sprite;
+
+						break;
 					}
 				}
 				
@@ -333,6 +337,8 @@ void board::turnPuyo()
 						cheackbox[y + 1][x].isBase = false;
 						cheackbox[y + 1][x].color;
 						cheackbox[y + 1][x].sprite;
+
+						break;
 
 					}
 					else if (cheackbox[y][x - 1].isFree)
@@ -371,6 +377,8 @@ void board::turnPuyo()
 						cheackbox[y][x - 1].isBase = false;
 						cheackbox[y][x - 1].color;
 						cheackbox[y][x - 1].sprite;
+
+						break;
 					}
 
 				}
@@ -392,7 +400,7 @@ void board::moveRight()
 				//if the second puyo is up
 				if (cheackbox[y - 1][x].isSelected)
 				{
-					if (x < 15 && cheackbox[y][x + 1].isFree && cheackbox[y - 1][x + 1].isFree)
+					if (x < 10 && cheackbox[y][x + 1].isFree && cheackbox[y - 1][x + 1].isFree)
 					{
 						// move the puyo base to right
 						cheackbox[y][x + 1].isFree =		cheackbox[y][x].isFree;
@@ -417,13 +425,15 @@ void board::moveRight()
 						cheackbox[y - 1][x].isFree = true;
 						cheackbox[y - 1][x].isSelected = false;
 						cheackbox[y - 1][x].isBase = false;
+
+						break;
 					}
 				}
 
 				//if the second puyo is on the right
 				else if (cheackbox[y][x + 1].isSelected)
 				{
-					if (x < 14 && cheackbox[y][x + 2].isFree)
+					if (x < 9 && cheackbox[y][x + 2].isFree)
 					{
 						// move the second puyo to right
 						cheackbox[y][x + 2].isFree =		cheackbox[y][x + 1].isFree;
@@ -443,13 +453,15 @@ void board::moveRight()
 						cheackbox[y][x].isFree = true;
 						cheackbox[y][x].isSelected = false;
 						cheackbox[y][x].isBase = false;
+
+						break;
 					}
 				}
 
 				//if the second puyo is down
 				else if (cheackbox[y + 1][x].isSelected)
 				{
-					if (x < 15 && cheackbox[y][x + 1].isFree && cheackbox[y + 1][x + 1].isFree)
+					if (x < 10 && cheackbox[y][x + 1].isFree && cheackbox[y + 1][x + 1].isFree)
 					{
 						// move the puyo base to right
 						cheackbox[y][x + 1].isFree =		cheackbox[y][x].isFree;
@@ -474,13 +486,15 @@ void board::moveRight()
 						cheackbox[y + 1][x].isFree = true;
 						cheackbox[y + 1][x].isSelected = false;
 						cheackbox[y + 1][x].isBase = false;
+
+						break;
 					}
 				}
 
 				//if the second puyo is on the left
 				else if (cheackbox[y][x - 1].isSelected)
 				{
-					if (x < 15 && cheackbox[y][x + 1].isFree)
+					if (x < 10 && cheackbox[y][x + 1].isFree)
 					{
 						// move the second puyo to right
 						cheackbox[y][x + 1].isFree =		cheackbox[y][x].isFree;
@@ -500,6 +514,8 @@ void board::moveRight()
 						cheackbox[y][x - 1].isFree = true;
 						cheackbox[y][x - 1].isSelected = false;
 						cheackbox[y][x - 1].isBase = false;
+
+						break;
 					}
 				}
 
@@ -545,6 +561,8 @@ void board::moveLeft()
 						cheackbox[y - 1][x].isFree = true;
 						cheackbox[y - 1][x].isSelected = false;
 						cheackbox[y - 1][x].isBase = false;
+
+						break;
 					}
 				}
 
@@ -571,6 +589,8 @@ void board::moveLeft()
 						cheackbox[y][x + 1].isFree = true;
 						cheackbox[y][x + 1].isSelected = false;
 						cheackbox[y][x + 1].isBase = false;
+
+						break;
 					}
 				}
 
@@ -602,6 +622,8 @@ void board::moveLeft()
 						cheackbox[y + 1][x].isFree = true;
 						cheackbox[y + 1][x].isSelected = false;
 						cheackbox[y + 1][x].isBase = false;
+
+						break;
 					}
 				}
 
@@ -628,6 +650,8 @@ void board::moveLeft()
 						cheackbox[y][x].isFree = true;
 						cheackbox[y][x].isSelected = false;
 						cheackbox[y][x].isBase = false;
+
+						break;
 					}
 				}
 
