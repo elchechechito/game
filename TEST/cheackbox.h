@@ -14,5 +14,7 @@ public:
 	int color;
 	int sprite;
 
+	bool isSelected;
+
 };
 
