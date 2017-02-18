@@ -18,18 +18,6 @@ board::board()
 			cheackbox[y][x].isBase = false;
 		}
 	}
-
-	cheackbox[1][5].isSelected = true;
-	cheackbox[1][5].isBase = true;
-	cheackbox[1][5].isFree = false;
-	cheackbox[1][5].color = 0;
-	cheackbox[1][5].sprite = 0;
-
-	cheackbox[0][5].isSelected = true;
-	cheackbox[0][5].isBase = false;
-	cheackbox[0][5].isFree = false;
-	cheackbox[0][5].color = 0;
-	cheackbox[0][5].sprite = 0;
 }
 
 board::~board()
@@ -85,6 +73,7 @@ void board::startGameBoard()
 				if (!moved)
 				{
 					newPuyos();
+					quit = endGame();
 				}
 
 				printBackground(randomBackground);
@@ -92,7 +81,7 @@ void board::startGameBoard()
 								
 				//Update screen
 				SDL_RenderPresent(sdl.gRenderer);
-				SDL_Delay(200);
+				SDL_Delay(300);
 
 			}
 		}
@@ -724,9 +713,17 @@ void board::newPuyos()
 
 	randomColor = rand() % 5;
 
-	cheackbox[0][5].color = randomColor;
+	cheackbox[0][5].color = randomColor;	
+}
 
+bool board::endGame()
+{
+	bool endGame = false;
 
+	if (cheackbox[1][5].isBase && !cheackbox[2][5].isFree)
+	{
+		endGame = true;
+	}
 
-
+	return endGame;
 }

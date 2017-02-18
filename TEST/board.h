@@ -29,5 +29,7 @@ class board
 		bool moveDown();
 
 		void newPuyos();
+
+		bool endGame();
 };
 
