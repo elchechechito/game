@@ -5,10 +5,19 @@
 class board
 {
 	public:
+
+		struct StructDeletesPuyos {
+			int x;
+			int y;
+			bool empty;
+		};
+
+		StructDeletesPuyos deletesPuyos[10];
+
 		board();
 		~board();
 
-		cheackbox cheackbox[16][11];
+		cheackbox cheackboxs[16][11];
 		loadSDL sdl;
 
 		void startGameBoard();
@@ -31,5 +40,15 @@ class board
 		void newPuyos();
 
 		bool endGame();
+
+		bool updateSprite();
+
+		bool checkDeletePuyo();
+
+		void deletePuyos(int x, int y, int originX, int OriginY);
+
+		bool compareBoxes(cheackbox box1, cheackbox box2);
+
+
 };
 

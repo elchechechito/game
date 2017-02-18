@@ -8,14 +8,14 @@ board::board()
 	{
 		for (int x = 0; x < 11; x++)
 		{
-			cheackbox[y][x].box.x = 60 + (33 * x);
-			cheackbox[y][x].box.y = 60 + (31 * y);
-			cheackbox[y][x].box.w = 33;
-			cheackbox[y][x].box.h = 31;
+			cheackboxs[y][x].box.x = 60 + (33 * x);
+			cheackboxs[y][x].box.y = 60 + (31 * y);
+			cheackboxs[y][x].box.w = 33;
+			cheackboxs[y][x].box.h = 31;
 			
-			cheackbox[y][x].isFree = true;
-			cheackbox[y][x].isSelected = false;
-			cheackbox[y][x].isBase = false;
+			cheackboxs[y][x].isFree = true;
+			cheackboxs[y][x].isSelected = false;
+			cheackboxs[y][x].isBase = false;
 		}
 	}
 }
@@ -59,7 +59,7 @@ void board::startGameBoard()
 				while (SDL_PollEvent(&e) != 0)
 				{
 					//User requests quit
-					if (e.type == SDL_QUIT)
+					if (e.type == SDL_QUIT || e.key.keysym.sym == SDLK_ESCAPE)
 					{
 						quit = true;
 					}
@@ -72,16 +72,29 @@ void board::startGameBoard()
 
 				if (!moved)
 				{
-					newPuyos();
-					quit = endGame();
-				}
+					bool isUpdate = updateSprite();
+					
+					if (!isUpdate)
+					{
+						bool isDeletePuyos = checkDeletePuyo();
+						
+						if (!isDeletePuyos)
+						{
+							/*newPuyos();
+							quit = endGame();*/
+						}
 
+						newPuyos();
+						quit = endGame();
+					}
+				}
+				
 				printBackground(randomBackground);
 				printBoard();
 								
 				//Update screen
 				SDL_RenderPresent(sdl.gRenderer);
-				SDL_Delay(300);
+				SDL_Delay(500);
 
 			}
 		}
@@ -114,12 +127,12 @@ void board::printBoard()
 	{
 		for (int x = 0; x < 11; x++)
 		{
-			if (cheackbox[y][x].isFree == false)
+			if (cheackboxs[y][x].isFree == false)
 			{
 				SDL_Rect* puyoClip = NULL;
-				int sprite = cheackbox[y][x].sprite;
+				int sprite = cheackboxs[y][x].sprite;
 
-				switch (cheackbox[y][x].color)
+				switch (cheackboxs[y][x].color)
 				{
 				case 0:
 					puyoClip = &sdl.redPuyoSprite[sprite];
@@ -146,7 +159,7 @@ void board::printBoard()
 					break;
 				}
 
-				sdl.render(cheackbox[y][x].box.x, cheackbox[y][x].box.y, sdl.gTexturePuyo, puyoClip, false);
+				sdl.render(cheackboxs[y][x].box.x, cheackboxs[y][x].box.y, sdl.gTexturePuyo, puyoClip, false);
 			}
 		}
 	}
@@ -191,7 +204,7 @@ bool board::cheackboxIsSelected()
 	{
 		for (int x = 0; x < 11; x++)
 		{
-			if (cheackbox[y][x].isSelected)
+			if (cheackboxs[y][x].isSelected)
 			{
 				return true;
 			}
@@ -231,145 +244,145 @@ void board::turnPuyo()
 		for (int x = 0; x < 11; x++)
 		{
 			//search the puyo base
-			if (cheackbox[y][x].isBase)
+			if (cheackboxs[y][x].isBase)
 			{
 				//if the second puyo is up
-				if (cheackbox[y - 1][x].isSelected)
+				if (cheackboxs[y - 1][x].isSelected)
 				{
 					//if the puyo base is in the last box on the right
-					if (x == 10 && cheackbox[y][x - 1].isFree)
+					if (x == 10 && cheackboxs[y][x - 1].isFree)
 					{
 						//move puyo base to left
-						cheackbox[y][x - 1].isFree =		cheackbox[y][x].isFree;
-						cheackbox[y][x - 1].isSelected =	cheackbox[y][x].isSelected;
-						cheackbox[y][x - 1].isBase =		cheackbox[y][x].isBase;
-						cheackbox[y][x - 1].color =			cheackbox[y][x].color;
-						cheackbox[y][x - 1].sprite =		cheackbox[y][x].sprite;
+						cheackboxs[y][x - 1].isFree =		cheackboxs[y][x].isFree;
+						cheackboxs[y][x - 1].isSelected =	cheackboxs[y][x].isSelected;
+						cheackboxs[y][x - 1].isBase =		cheackboxs[y][x].isBase;
+						cheackboxs[y][x - 1].color =			cheackboxs[y][x].color;
+						cheackboxs[y][x - 1].sprite =		cheackboxs[y][x].sprite;
 
 						//move up puyo to down
-						cheackbox[y][x].isFree =		cheackbox[y - 1][x].isFree;
-						cheackbox[y][x].isSelected =	cheackbox[y - 1][x].isSelected;
-						cheackbox[y][x].isBase =		cheackbox[y - 1][x].isBase;
-						cheackbox[y][x].color =			cheackbox[y - 1][x].color;
-						cheackbox[y][x].sprite =		cheackbox[y - 1][x].sprite;
+						cheackboxs[y][x].isFree =		cheackboxs[y - 1][x].isFree;
+						cheackboxs[y][x].isSelected =	cheackboxs[y - 1][x].isSelected;
+						cheackboxs[y][x].isBase =		cheackboxs[y - 1][x].isBase;
+						cheackboxs[y][x].color =			cheackboxs[y - 1][x].color;
+						cheackboxs[y][x].sprite =		cheackboxs[y - 1][x].sprite;
 
 						//delete up puyo
-						cheackbox[y - 1][x].isFree = true;
-						cheackbox[y - 1][x].isSelected = false;
-						cheackbox[y - 1][x].isBase = false;
-						cheackbox[y - 1][x].color;
-						cheackbox[y - 1][x].sprite;
+						cheackboxs[y - 1][x].isFree = true;
+						cheackboxs[y - 1][x].isSelected = false;
+						cheackboxs[y - 1][x].isBase = false;
+						cheackboxs[y - 1][x].color;
+						cheackboxs[y - 1][x].sprite;
 
 						break;
 
 					}
-					else if (cheackbox[y][x + 1].isFree)
+					else if (cheackboxs[y][x + 1].isFree)
 					{
 						// up puyo to right
-						cheackbox[y][x + 1].isFree =		cheackbox[y - 1][x].isFree;
-						cheackbox[y][x + 1].isSelected =	cheackbox[y - 1][x].isSelected;
-						cheackbox[y][x + 1].isBase =		cheackbox[y - 1][x].isBase;
-						cheackbox[y][x + 1].color =			cheackbox[y - 1][x].color;
-						cheackbox[y][x + 1].sprite =		cheackbox[y - 1][x].sprite;
+						cheackboxs[y][x + 1].isFree =		cheackboxs[y - 1][x].isFree;
+						cheackboxs[y][x + 1].isSelected =	cheackboxs[y - 1][x].isSelected;
+						cheackboxs[y][x + 1].isBase =		cheackboxs[y - 1][x].isBase;
+						cheackboxs[y][x + 1].color =			cheackboxs[y - 1][x].color;
+						cheackboxs[y][x + 1].sprite =		cheackboxs[y - 1][x].sprite;
 
 						//delete up puyo
-						cheackbox[y - 1][x].isFree = true;
-						cheackbox[y - 1][x].isSelected = false;
-						cheackbox[y - 1][x].isBase = false;
-						cheackbox[y - 1][x].color;
-						cheackbox[y - 1][x].sprite;
+						cheackboxs[y - 1][x].isFree = true;
+						cheackboxs[y - 1][x].isSelected = false;
+						cheackboxs[y - 1][x].isBase = false;
+						cheackboxs[y - 1][x].color;
+						cheackboxs[y - 1][x].sprite;
 					}
 				}
 				
 				//if the second puyo is on the right
-				else if (cheackbox[y][x + 1].isSelected)
+				else if (cheackboxs[y][x + 1].isSelected)
 				{
-					if (cheackbox[y + 1][x].isFree)
+					if (cheackboxs[y + 1][x].isFree)
 					{
 						// right puyo to dow
-						cheackbox[y + 1][x].isFree =		cheackbox[y][x + 1].isFree;
-						cheackbox[y + 1][x].isSelected =	cheackbox[y][x + 1].isSelected;
-						cheackbox[y + 1][x].isBase =		cheackbox[y][x + 1].isBase;
-						cheackbox[y + 1][x].color =			cheackbox[y][x + 1].color;
-						cheackbox[y + 1][x].sprite =		cheackbox[y][x + 1].sprite;
+						cheackboxs[y + 1][x].isFree =		cheackboxs[y][x + 1].isFree;
+						cheackboxs[y + 1][x].isSelected =	cheackboxs[y][x + 1].isSelected;
+						cheackboxs[y + 1][x].isBase =		cheackboxs[y][x + 1].isBase;
+						cheackboxs[y + 1][x].color =			cheackboxs[y][x + 1].color;
+						cheackboxs[y + 1][x].sprite =		cheackboxs[y][x + 1].sprite;
 
 						//delete up puyo
-						cheackbox[y][x + 1].isFree = true;
-						cheackbox[y][x + 1].isSelected = false;
-						cheackbox[y][x + 1].isBase = false;
-						cheackbox[y][x + 1].color;
-						cheackbox[y][x + 1].sprite;
+						cheackboxs[y][x + 1].isFree = true;
+						cheackboxs[y][x + 1].isSelected = false;
+						cheackboxs[y][x + 1].isBase = false;
+						cheackboxs[y][x + 1].color;
+						cheackboxs[y][x + 1].sprite;
 
 						break;
 					}
 				}
 				
 				//if the second puyo is down
-				else if (cheackbox[y + 1][x].isSelected)
+				else if (cheackboxs[y + 1][x].isSelected)
 				{
 					//if the puyo base is in the first box on the left
-					if (x == 0 && cheackbox[y][x + 1].isFree)
+					if (x == 0 && cheackboxs[y][x + 1].isFree)
 					{
 						//move puyo base to right
-						cheackbox[y][x + 1].isFree =		cheackbox[y][x].isFree;
-						cheackbox[y][x + 1].isSelected =	cheackbox[y][x].isSelected;
-						cheackbox[y][x + 1].isBase =		cheackbox[y][x].isBase;
-						cheackbox[y][x + 1].color =			cheackbox[y][x].color;
-						cheackbox[y][x + 1].sprite =		cheackbox[y][x].sprite;
+						cheackboxs[y][x + 1].isFree =		cheackboxs[y][x].isFree;
+						cheackboxs[y][x + 1].isSelected =	cheackboxs[y][x].isSelected;
+						cheackboxs[y][x + 1].isBase =		cheackboxs[y][x].isBase;
+						cheackboxs[y][x + 1].color =			cheackboxs[y][x].color;
+						cheackboxs[y][x + 1].sprite =		cheackboxs[y][x].sprite;
 
 						//move down puyo to up
-						cheackbox[y][x].isFree =		cheackbox[y + 1][x].isFree;
-						cheackbox[y][x].isSelected =	cheackbox[y + 1][x].isSelected;
-						cheackbox[y][x].isBase =		cheackbox[y + 1][x].isBase;
-						cheackbox[y][x].color =			cheackbox[y + 1][x].color;
-						cheackbox[y][x].sprite =		cheackbox[y + 1][x].sprite;
+						cheackboxs[y][x].isFree =		cheackboxs[y + 1][x].isFree;
+						cheackboxs[y][x].isSelected =	cheackboxs[y + 1][x].isSelected;
+						cheackboxs[y][x].isBase =		cheackboxs[y + 1][x].isBase;
+						cheackboxs[y][x].color =			cheackboxs[y + 1][x].color;
+						cheackboxs[y][x].sprite =		cheackboxs[y + 1][x].sprite;
 
 						//delete up puyo
-						cheackbox[y + 1][x].isFree = true;
-						cheackbox[y + 1][x].isSelected = false;
-						cheackbox[y + 1][x].isBase = false;
-						cheackbox[y + 1][x].color;
-						cheackbox[y + 1][x].sprite;
+						cheackboxs[y + 1][x].isFree = true;
+						cheackboxs[y + 1][x].isSelected = false;
+						cheackboxs[y + 1][x].isBase = false;
+						cheackboxs[y + 1][x].color;
+						cheackboxs[y + 1][x].sprite;
 
 						break;
 
 					}
-					else if (cheackbox[y][x - 1].isFree)
+					else if (cheackboxs[y][x - 1].isFree)
 					{
 						// move down puyo to left
-						cheackbox[y][x - 1].isFree =		cheackbox[y + 1][x].isFree;
-						cheackbox[y][x - 1].isSelected =	cheackbox[y + 1][x].isSelected;
-						cheackbox[y][x - 1].isBase =		cheackbox[y + 1][x].isBase;
-						cheackbox[y][x - 1].color =			cheackbox[y + 1][x].color;
-						cheackbox[y][x - 1].sprite =		cheackbox[y + 1][x].sprite;
+						cheackboxs[y][x - 1].isFree =		cheackboxs[y + 1][x].isFree;
+						cheackboxs[y][x - 1].isSelected =	cheackboxs[y + 1][x].isSelected;
+						cheackboxs[y][x - 1].isBase =		cheackboxs[y + 1][x].isBase;
+						cheackboxs[y][x - 1].color =			cheackboxs[y + 1][x].color;
+						cheackboxs[y][x - 1].sprite =		cheackboxs[y + 1][x].sprite;
 
 						//delete up puyo
-						cheackbox[y + 1][x].isFree = true;
-						cheackbox[y + 1][x].isSelected = false;
-						cheackbox[y + 1][x].isBase = false;
-						cheackbox[y + 1][x].color;
-						cheackbox[y + 1][x].sprite;
+						cheackboxs[y + 1][x].isFree = true;
+						cheackboxs[y + 1][x].isSelected = false;
+						cheackboxs[y + 1][x].isBase = false;
+						cheackboxs[y + 1][x].color;
+						cheackboxs[y + 1][x].sprite;
 					}
 				}
 
 				//if the second puyo is on the left
-				else if (cheackbox[y][x - 1].isSelected)
+				else if (cheackboxs[y][x - 1].isSelected)
 				{
-					if (cheackbox[y - 1][x].isFree)
+					if (cheackboxs[y - 1][x].isFree)
 					{
 						// left puyo to up
-						cheackbox[y - 1][x].isFree =		cheackbox[y][x - 1].isFree;
-						cheackbox[y - 1][x].isSelected =	cheackbox[y][x - 1].isSelected;
-						cheackbox[y - 1][x].isBase =		cheackbox[y][x - 1].isBase;
-						cheackbox[y - 1][x].color =			cheackbox[y][x - 1].color;
-						cheackbox[y - 1][x].sprite =		cheackbox[y][x - 1].sprite;
+						cheackboxs[y - 1][x].isFree =		cheackboxs[y][x - 1].isFree;
+						cheackboxs[y - 1][x].isSelected =	cheackboxs[y][x - 1].isSelected;
+						cheackboxs[y - 1][x].isBase =		cheackboxs[y][x - 1].isBase;
+						cheackboxs[y - 1][x].color =			cheackboxs[y][x - 1].color;
+						cheackboxs[y - 1][x].sprite =		cheackboxs[y][x - 1].sprite;
 
 						//delete up puyo
-						cheackbox[y][x - 1].isFree = true;
-						cheackbox[y][x - 1].isSelected = false;
-						cheackbox[y][x - 1].isBase = false;
-						cheackbox[y][x - 1].color;
-						cheackbox[y][x - 1].sprite;
+						cheackboxs[y][x - 1].isFree = true;
+						cheackboxs[y][x - 1].isSelected = false;
+						cheackboxs[y][x - 1].isBase = false;
+						cheackboxs[y][x - 1].color;
+						cheackboxs[y][x - 1].sprite;
 
 						break;
 					}
@@ -388,125 +401,125 @@ void board::moveRight()
 		for (int x = 0; x < 11; x++)
 		{
 			//find the puyo base
-			if (cheackbox[y][x].isBase)
+			if (cheackboxs[y][x].isBase)
 			{
 				//if the second puyo is up
-				if (cheackbox[y - 1][x].isSelected)
+				if (cheackboxs[y - 1][x].isSelected)
 				{
-					if (x < 10 && cheackbox[y][x + 1].isFree && cheackbox[y - 1][x + 1].isFree)
+					if (x < 10 && cheackboxs[y][x + 1].isFree && cheackboxs[y - 1][x + 1].isFree)
 					{
 						// move the puyo base to right
-						cheackbox[y][x + 1].isFree =		cheackbox[y][x].isFree;
-						cheackbox[y][x + 1].isSelected =	cheackbox[y][x].isSelected;
-						cheackbox[y][x + 1].isBase =		cheackbox[y][x].isBase;
-						cheackbox[y][x + 1].color =			cheackbox[y][x].color;
-						cheackbox[y][x + 1].sprite =		cheackbox[y][x].sprite;
+						cheackboxs[y][x + 1].isFree =		cheackboxs[y][x].isFree;
+						cheackboxs[y][x + 1].isSelected =	cheackboxs[y][x].isSelected;
+						cheackboxs[y][x + 1].isBase =		cheackboxs[y][x].isBase;
+						cheackboxs[y][x + 1].color =			cheackboxs[y][x].color;
+						cheackboxs[y][x + 1].sprite =		cheackboxs[y][x].sprite;
 
 						//delete puyo base
-						cheackbox[y][x].isFree = true;
-						cheackbox[y][x].isSelected = false;
-						cheackbox[y][x].isBase = false;
+						cheackboxs[y][x].isFree = true;
+						cheackboxs[y][x].isSelected = false;
+						cheackboxs[y][x].isBase = false;
 						
 						// move the second puyo to right
-						cheackbox[y - 1][x + 1].isFree =		cheackbox[y - 1][x].isFree;
-						cheackbox[y - 1][x + 1].isSelected =	cheackbox[y - 1][x].isSelected;
-						cheackbox[y - 1][x + 1].isBase =		cheackbox[y - 1][x].isBase;
-						cheackbox[y - 1][x + 1].color =			cheackbox[y - 1][x].color;
-						cheackbox[y - 1][x + 1].sprite =		cheackbox[y - 1][x].sprite;
+						cheackboxs[y - 1][x + 1].isFree =		cheackboxs[y - 1][x].isFree;
+						cheackboxs[y - 1][x + 1].isSelected =	cheackboxs[y - 1][x].isSelected;
+						cheackboxs[y - 1][x + 1].isBase =		cheackboxs[y - 1][x].isBase;
+						cheackboxs[y - 1][x + 1].color =			cheackboxs[y - 1][x].color;
+						cheackboxs[y - 1][x + 1].sprite =		cheackboxs[y - 1][x].sprite;
 
 						//delete second puyo
-						cheackbox[y - 1][x].isFree = true;
-						cheackbox[y - 1][x].isSelected = false;
-						cheackbox[y - 1][x].isBase = false;
+						cheackboxs[y - 1][x].isFree = true;
+						cheackboxs[y - 1][x].isSelected = false;
+						cheackboxs[y - 1][x].isBase = false;
 
 						break;
 					}
 				}
 
 				//if the second puyo is on the right
-				else if (cheackbox[y][x + 1].isSelected)
+				else if (cheackboxs[y][x + 1].isSelected)
 				{
-					if (x < 9 && cheackbox[y][x + 2].isFree)
+					if (x < 9 && cheackboxs[y][x + 2].isFree)
 					{
 						// move the second puyo to right
-						cheackbox[y][x + 2].isFree =		cheackbox[y][x + 1].isFree;
-						cheackbox[y][x + 2].isSelected =	cheackbox[y][x + 1].isSelected;
-						cheackbox[y][x + 2].isBase =		cheackbox[y][x + 1].isBase;
-						cheackbox[y][x + 2].color =			cheackbox[y][x + 1].color;
-						cheackbox[y][x + 2].sprite =		cheackbox[y][x + 1].sprite;
+						cheackboxs[y][x + 2].isFree =		cheackboxs[y][x + 1].isFree;
+						cheackboxs[y][x + 2].isSelected =	cheackboxs[y][x + 1].isSelected;
+						cheackboxs[y][x + 2].isBase =		cheackboxs[y][x + 1].isBase;
+						cheackboxs[y][x + 2].color =			cheackboxs[y][x + 1].color;
+						cheackboxs[y][x + 2].sprite =		cheackboxs[y][x + 1].sprite;
 
 						// move the puyo base to right
-						cheackbox[y][x + 1].isFree =		cheackbox[y][x].isFree;
-						cheackbox[y][x + 1].isSelected =	cheackbox[y][x].isSelected;
-						cheackbox[y][x + 1].isBase =		cheackbox[y][x].isBase;
-						cheackbox[y][x + 1].color =			cheackbox[y][x].color;
-						cheackbox[y][x + 1].sprite =		cheackbox[y][x].sprite;
+						cheackboxs[y][x + 1].isFree =		cheackboxs[y][x].isFree;
+						cheackboxs[y][x + 1].isSelected =	cheackboxs[y][x].isSelected;
+						cheackboxs[y][x + 1].isBase =		cheackboxs[y][x].isBase;
+						cheackboxs[y][x + 1].color =			cheackboxs[y][x].color;
+						cheackboxs[y][x + 1].sprite =		cheackboxs[y][x].sprite;
 						
 						//delete puyo base
-						cheackbox[y][x].isFree = true;
-						cheackbox[y][x].isSelected = false;
-						cheackbox[y][x].isBase = false;
+						cheackboxs[y][x].isFree = true;
+						cheackboxs[y][x].isSelected = false;
+						cheackboxs[y][x].isBase = false;
 
 						break;
 					}
 				}
 
 				//if the second puyo is down
-				else if (cheackbox[y + 1][x].isSelected)
+				else if (cheackboxs[y + 1][x].isSelected)
 				{
-					if (x < 10 && cheackbox[y][x + 1].isFree && cheackbox[y + 1][x + 1].isFree)
+					if (x < 10 && cheackboxs[y][x + 1].isFree && cheackboxs[y + 1][x + 1].isFree)
 					{
 						// move the puyo base to right
-						cheackbox[y][x + 1].isFree =		cheackbox[y][x].isFree;
-						cheackbox[y][x + 1].isSelected =	cheackbox[y][x].isSelected;
-						cheackbox[y][x + 1].isBase =		cheackbox[y][x].isBase;
-						cheackbox[y][x + 1].color =			cheackbox[y][x].color;
-						cheackbox[y][x + 1].sprite =		cheackbox[y][x].sprite;
+						cheackboxs[y][x + 1].isFree =		cheackboxs[y][x].isFree;
+						cheackboxs[y][x + 1].isSelected =	cheackboxs[y][x].isSelected;
+						cheackboxs[y][x + 1].isBase =		cheackboxs[y][x].isBase;
+						cheackboxs[y][x + 1].color =			cheackboxs[y][x].color;
+						cheackboxs[y][x + 1].sprite =		cheackboxs[y][x].sprite;
 
 						//delete puyo base
-						cheackbox[y][x].isFree = true;
-						cheackbox[y][x].isSelected = false;
-						cheackbox[y][x].isBase = false;
+						cheackboxs[y][x].isFree = true;
+						cheackboxs[y][x].isSelected = false;
+						cheackboxs[y][x].isBase = false;
 
 						// move the second puyo to right
-						cheackbox[y + 1][x + 1].isFree =		cheackbox[y + 1][x].isFree;
-						cheackbox[y + 1][x + 1].isSelected =	cheackbox[y + 1][x].isSelected;
-						cheackbox[y + 1][x + 1].isBase =		cheackbox[y + 1][x].isBase;
-						cheackbox[y + 1][x + 1].color =			cheackbox[y + 1][x].color;
-						cheackbox[y + 1][x + 1].sprite =		cheackbox[y + 1][x].sprite;
+						cheackboxs[y + 1][x + 1].isFree =		cheackboxs[y + 1][x].isFree;
+						cheackboxs[y + 1][x + 1].isSelected =	cheackboxs[y + 1][x].isSelected;
+						cheackboxs[y + 1][x + 1].isBase =		cheackboxs[y + 1][x].isBase;
+						cheackboxs[y + 1][x + 1].color =			cheackboxs[y + 1][x].color;
+						cheackboxs[y + 1][x + 1].sprite =		cheackboxs[y + 1][x].sprite;
 
 						//delete second puyo
-						cheackbox[y + 1][x].isFree = true;
-						cheackbox[y + 1][x].isSelected = false;
-						cheackbox[y + 1][x].isBase = false;
+						cheackboxs[y + 1][x].isFree = true;
+						cheackboxs[y + 1][x].isSelected = false;
+						cheackboxs[y + 1][x].isBase = false;
 
 						break;
 					}
 				}
 
 				//if the second puyo is on the left
-				else if (cheackbox[y][x - 1].isSelected)
+				else if (cheackboxs[y][x - 1].isSelected)
 				{
-					if (x < 10 && cheackbox[y][x + 1].isFree)
+					if (x < 10 && cheackboxs[y][x + 1].isFree)
 					{
 						// move the second puyo to right
-						cheackbox[y][x + 1].isFree =		cheackbox[y][x].isFree;
-						cheackbox[y][x + 1].isSelected =	cheackbox[y][x].isSelected;
-						cheackbox[y][x + 1].isBase =		cheackbox[y][x].isBase;
-						cheackbox[y][x + 1].color =			cheackbox[y][x].color;
-						cheackbox[y][x + 1].sprite =		cheackbox[y][x].sprite;
+						cheackboxs[y][x + 1].isFree =		cheackboxs[y][x].isFree;
+						cheackboxs[y][x + 1].isSelected =	cheackboxs[y][x].isSelected;
+						cheackboxs[y][x + 1].isBase =		cheackboxs[y][x].isBase;
+						cheackboxs[y][x + 1].color =			cheackboxs[y][x].color;
+						cheackboxs[y][x + 1].sprite =		cheackboxs[y][x].sprite;
 
 						// move the puyo base to right
-						cheackbox[y][x].isFree =		cheackbox[y][x - 1].isFree;
-						cheackbox[y][x].isSelected =	cheackbox[y][x - 1].isSelected;
-						cheackbox[y][x].isBase =		cheackbox[y][x - 1].isBase;
-						cheackbox[y][x].color =			cheackbox[y][x - 1].color;
-						cheackbox[y][x].sprite =		cheackbox[y][x - 1].sprite;
+						cheackboxs[y][x].isFree =		cheackboxs[y][x - 1].isFree;
+						cheackboxs[y][x].isSelected =	cheackboxs[y][x - 1].isSelected;
+						cheackboxs[y][x].isBase =		cheackboxs[y][x - 1].isBase;
+						cheackboxs[y][x].color =			cheackboxs[y][x - 1].color;
+						cheackboxs[y][x].sprite =		cheackboxs[y][x - 1].sprite;
 
 						//delete second puyo
-						cheackbox[y][x - 1].isFree = true;
-						cheackbox[y][x - 1].isSelected = false;
-						cheackbox[y][x - 1].isBase = false;
+						cheackboxs[y][x - 1].isFree = true;
+						cheackboxs[y][x - 1].isSelected = false;
+						cheackboxs[y][x - 1].isBase = false;
 
 						break;
 					}
@@ -524,125 +537,125 @@ void board::moveLeft()
 		for (int x = 0; x < 11; x++)
 		{
 			//find the puyo base
-			if (cheackbox[y][x].isBase)
+			if (cheackboxs[y][x].isBase)
 			{
 				//if the second puyo is up
-				if (cheackbox[y - 1][x].isSelected)
+				if (cheackboxs[y - 1][x].isSelected)
 				{
-					if (x > 0 && cheackbox[y][x - 1].isFree && cheackbox[y - 1][x - 1].isFree)
+					if (x > 0 && cheackboxs[y][x - 1].isFree && cheackboxs[y - 1][x - 1].isFree)
 					{
 						// move the puyo base to left
-						cheackbox[y][x - 1].isFree =		cheackbox[y][x].isFree;
-						cheackbox[y][x - 1].isSelected =	cheackbox[y][x].isSelected;
-						cheackbox[y][x - 1].isBase =		cheackbox[y][x].isBase;
-						cheackbox[y][x - 1].color =			cheackbox[y][x].color;
-						cheackbox[y][x - 1].sprite =		cheackbox[y][x].sprite;
+						cheackboxs[y][x - 1].isFree =		cheackboxs[y][x].isFree;
+						cheackboxs[y][x - 1].isSelected =	cheackboxs[y][x].isSelected;
+						cheackboxs[y][x - 1].isBase =		cheackboxs[y][x].isBase;
+						cheackboxs[y][x - 1].color =			cheackboxs[y][x].color;
+						cheackboxs[y][x - 1].sprite =		cheackboxs[y][x].sprite;
 
 						//delete puyo base
-						cheackbox[y][x].isFree = true;
-						cheackbox[y][x].isSelected = false;
-						cheackbox[y][x].isBase = false;
+						cheackboxs[y][x].isFree = true;
+						cheackboxs[y][x].isSelected = false;
+						cheackboxs[y][x].isBase = false;
 
 						// move the second puyo to left
-						cheackbox[y - 1][x - 1].isFree =		cheackbox[y - 1][x].isFree;
-						cheackbox[y - 1][x - 1].isSelected =	cheackbox[y - 1][x].isSelected;
-						cheackbox[y - 1][x - 1].isBase =		cheackbox[y - 1][x].isBase;
-						cheackbox[y - 1][x - 1].color =			cheackbox[y - 1][x].color;
-						cheackbox[y - 1][x - 1].sprite =		cheackbox[y - 1][x].sprite;
+						cheackboxs[y - 1][x - 1].isFree =		cheackboxs[y - 1][x].isFree;
+						cheackboxs[y - 1][x - 1].isSelected =	cheackboxs[y - 1][x].isSelected;
+						cheackboxs[y - 1][x - 1].isBase =		cheackboxs[y - 1][x].isBase;
+						cheackboxs[y - 1][x - 1].color =			cheackboxs[y - 1][x].color;
+						cheackboxs[y - 1][x - 1].sprite =		cheackboxs[y - 1][x].sprite;
 
 						//delete second puyo
-						cheackbox[y - 1][x].isFree = true;
-						cheackbox[y - 1][x].isSelected = false;
-						cheackbox[y - 1][x].isBase = false;
+						cheackboxs[y - 1][x].isFree = true;
+						cheackboxs[y - 1][x].isSelected = false;
+						cheackboxs[y - 1][x].isBase = false;
 
 						break;
 					}
 				}
 
 				//if the second puyo is on the right
-				else if (cheackbox[y][x + 1].isSelected)
+				else if (cheackboxs[y][x + 1].isSelected)
 				{
-					if (x > 0 && cheackbox[y][x - 1].isFree)
+					if (x > 0 && cheackboxs[y][x - 1].isFree)
 					{
 						// move the puyo base to left
-						cheackbox[y][x - 1].isFree =		cheackbox[y][x].isFree;
-						cheackbox[y][x - 1].isSelected =	cheackbox[y][x].isSelected;
-						cheackbox[y][x - 1].isBase =		cheackbox[y][x].isBase;
-						cheackbox[y][x - 1].color =			cheackbox[y][x].color;
-						cheackbox[y][x - 1].sprite =		cheackbox[y][x].sprite;
+						cheackboxs[y][x - 1].isFree =		cheackboxs[y][x].isFree;
+						cheackboxs[y][x - 1].isSelected =	cheackboxs[y][x].isSelected;
+						cheackboxs[y][x - 1].isBase =		cheackboxs[y][x].isBase;
+						cheackboxs[y][x - 1].color =			cheackboxs[y][x].color;
+						cheackboxs[y][x - 1].sprite =		cheackboxs[y][x].sprite;
 
 						// move the second puyo to left
-						cheackbox[y][x].isFree =		cheackbox[y][x + 1].isFree;
-						cheackbox[y][x].isSelected =	cheackbox[y][x + 1].isSelected;
-						cheackbox[y][x].isBase =		cheackbox[y][x + 1].isBase;
-						cheackbox[y][x].color =			cheackbox[y][x + 1].color;
-						cheackbox[y][x].sprite =		cheackbox[y][x + 1].sprite;
+						cheackboxs[y][x].isFree =		cheackboxs[y][x + 1].isFree;
+						cheackboxs[y][x].isSelected =	cheackboxs[y][x + 1].isSelected;
+						cheackboxs[y][x].isBase =		cheackboxs[y][x + 1].isBase;
+						cheackboxs[y][x].color =			cheackboxs[y][x + 1].color;
+						cheackboxs[y][x].sprite =		cheackboxs[y][x + 1].sprite;
 
 						//delete the second puyo 
-						cheackbox[y][x + 1].isFree = true;
-						cheackbox[y][x + 1].isSelected = false;
-						cheackbox[y][x + 1].isBase = false;
+						cheackboxs[y][x + 1].isFree = true;
+						cheackboxs[y][x + 1].isSelected = false;
+						cheackboxs[y][x + 1].isBase = false;
 
 						break;
 					}
 				}
 
 				//if the second puyo is down
-				else if (cheackbox[y + 1][x].isSelected)
+				else if (cheackboxs[y + 1][x].isSelected)
 				{
-					if (x > 0  && cheackbox[y][x - 1].isFree && cheackbox[y + 1][x - 1].isFree)
+					if (x > 0  && cheackboxs[y][x - 1].isFree && cheackboxs[y + 1][x - 1].isFree)
 					{
 						// move the puyo base to left
-						cheackbox[y][x - 1].isFree =		cheackbox[y][x].isFree;
-						cheackbox[y][x - 1].isSelected =	cheackbox[y][x].isSelected;
-						cheackbox[y][x - 1].isBase =		cheackbox[y][x].isBase;
-						cheackbox[y][x - 1].color =			cheackbox[y][x].color;
-						cheackbox[y][x - 1].sprite =		cheackbox[y][x].sprite;
+						cheackboxs[y][x - 1].isFree =		cheackboxs[y][x].isFree;
+						cheackboxs[y][x - 1].isSelected =	cheackboxs[y][x].isSelected;
+						cheackboxs[y][x - 1].isBase =		cheackboxs[y][x].isBase;
+						cheackboxs[y][x - 1].color =			cheackboxs[y][x].color;
+						cheackboxs[y][x - 1].sprite =		cheackboxs[y][x].sprite;
 
 						//delete puyo base
-						cheackbox[y][x].isFree = true;
-						cheackbox[y][x].isSelected = false;
-						cheackbox[y][x].isBase = false;
+						cheackboxs[y][x].isFree = true;
+						cheackboxs[y][x].isSelected = false;
+						cheackboxs[y][x].isBase = false;
 
 						// move the second puyo to right
-						cheackbox[y + 1][x - 1].isFree =		cheackbox[y + 1][x].isFree;
-						cheackbox[y + 1][x - 1].isSelected =	cheackbox[y + 1][x].isSelected;
-						cheackbox[y + 1][x - 1].isBase =		cheackbox[y + 1][x].isBase;
-						cheackbox[y + 1][x - 1].color =			cheackbox[y + 1][x].color;
-						cheackbox[y + 1][x - 1].sprite =		cheackbox[y + 1][x].sprite;
+						cheackboxs[y + 1][x - 1].isFree =		cheackboxs[y + 1][x].isFree;
+						cheackboxs[y + 1][x - 1].isSelected =	cheackboxs[y + 1][x].isSelected;
+						cheackboxs[y + 1][x - 1].isBase =		cheackboxs[y + 1][x].isBase;
+						cheackboxs[y + 1][x - 1].color =			cheackboxs[y + 1][x].color;
+						cheackboxs[y + 1][x - 1].sprite =		cheackboxs[y + 1][x].sprite;
 
 						//delete second puyo
-						cheackbox[y + 1][x].isFree = true;
-						cheackbox[y + 1][x].isSelected = false;
-						cheackbox[y + 1][x].isBase = false;
+						cheackboxs[y + 1][x].isFree = true;
+						cheackboxs[y + 1][x].isSelected = false;
+						cheackboxs[y + 1][x].isBase = false;
 
 						break;
 					}
 				}
 
 				//if the second puyo is on the left
-				else if (cheackbox[y][x - 1].isSelected)
+				else if (cheackboxs[y][x - 1].isSelected)
 				{
-					if (x > 1 && cheackbox[y][x - 2].isFree)
+					if (x > 1 && cheackboxs[y][x - 2].isFree)
 					{
 						// move the second puyo to left
-						cheackbox[y][x - 2].isFree =		cheackbox[y][x - 1].isFree;
-						cheackbox[y][x - 2].isSelected =	cheackbox[y][x - 1].isSelected;
-						cheackbox[y][x - 2].isBase =		cheackbox[y][x - 1].isBase;
-						cheackbox[y][x - 2].color =			cheackbox[y][x - 1].color;
-						cheackbox[y][x - 2].sprite =		cheackbox[y][x - 1].sprite;
+						cheackboxs[y][x - 2].isFree =		cheackboxs[y][x - 1].isFree;
+						cheackboxs[y][x - 2].isSelected =	cheackboxs[y][x - 1].isSelected;
+						cheackboxs[y][x - 2].isBase =		cheackboxs[y][x - 1].isBase;
+						cheackboxs[y][x - 2].color =			cheackboxs[y][x - 1].color;
+						cheackboxs[y][x - 2].sprite =		cheackboxs[y][x - 1].sprite;
 
 						// move the puyo base to left
-						cheackbox[y][x - 1].isFree =		cheackbox[y][x].isFree;
-						cheackbox[y][x - 1].isSelected =	cheackbox[y][x].isSelected;
-						cheackbox[y][x - 1].isBase =		cheackbox[y][x].isBase;
-						cheackbox[y][x - 1].color =			cheackbox[y][x].color;
-						cheackbox[y][x - 1].sprite =		cheackbox[y][x].sprite;
+						cheackboxs[y][x - 1].isFree =		cheackboxs[y][x].isFree;
+						cheackboxs[y][x - 1].isSelected =	cheackboxs[y][x].isSelected;
+						cheackboxs[y][x - 1].isBase =		cheackboxs[y][x].isBase;
+						cheackboxs[y][x - 1].color =			cheackboxs[y][x].color;
+						cheackboxs[y][x - 1].sprite =		cheackboxs[y][x].sprite;
 
 						//delete second puyo
-						cheackbox[y][x].isFree = true;
-						cheackbox[y][x].isSelected = false;
-						cheackbox[y][x].isBase = false;
+						cheackboxs[y][x].isFree = true;
+						cheackboxs[y][x].isSelected = false;
+						cheackboxs[y][x].isBase = false;
 
 						break;
 					}
@@ -661,17 +674,17 @@ bool board::moveDown()
 	{
 		for (int x = 10; x > -1; x--)
 		{
-			if (!cheackbox[y][x].isFree && cheackbox[y + 1][x].isFree)
+			if (!cheackboxs[y][x].isFree && cheackboxs[y + 1][x].isFree)
 			{
-				cheackbox[y + 1][x].isFree =		cheackbox[y][x].isFree;
-				cheackbox[y + 1][x].isSelected =	cheackbox[y][x].isSelected;
-				cheackbox[y + 1][x].isBase =		cheackbox[y][x].isBase;
-				cheackbox[y + 1][x].color =			cheackbox[y][x].color;
-				cheackbox[y + 1][x].sprite =		cheackbox[y][x].sprite;
+				cheackboxs[y + 1][x].isFree =		cheackboxs[y][x].isFree;
+				cheackboxs[y + 1][x].isSelected =	cheackboxs[y][x].isSelected;
+				cheackboxs[y + 1][x].isBase =		cheackboxs[y][x].isBase;
+				cheackboxs[y + 1][x].color =			cheackboxs[y][x].color;
+				cheackboxs[y + 1][x].sprite =		cheackboxs[y][x].sprite;
 
-				cheackbox[y][x].isFree = true;
-				cheackbox[y][x].isSelected = false;
-				cheackbox[y][x].isBase = false;
+				cheackboxs[y][x].isFree = true;
+				cheackboxs[y][x].isSelected = false;
+				cheackboxs[y][x].isBase = false;
 				
 				success = true;
 								
@@ -689,41 +702,274 @@ void board::newPuyos()
 	{
 		for (int x = 0; x < 11; x++)
 		{
-			if (cheackbox[y][x].isSelected)
+			if (cheackboxs[y][x].isSelected)
 			{
-				cheackbox[y][x].isSelected = false;
-				cheackbox[y][x].isBase = false;
+				cheackboxs[y][x].isSelected = false;
+				cheackboxs[y][x].isBase = false;
 			}
 		}
 	}
 
-	cheackbox[1][5].isSelected = true;
-	cheackbox[1][5].isFree = false;
-	cheackbox[1][5].isBase = true;
-	cheackbox[1][5].sprite = 0;
+	cheackboxs[1][5].isSelected = true;
+	cheackboxs[1][5].isFree = false;
+	cheackboxs[1][5].isBase = true;
+	cheackboxs[1][5].sprite = 0;
+	int randomColor = rand() % 2;
+	cheackboxs[1][5].color = randomColor;
 
-	int randomColor = rand() % 5;
-
-	cheackbox[1][5].color = randomColor;
-
-	cheackbox[0][5].isSelected = true;
-	cheackbox[0][5].isFree = false;
-	cheackbox[0][5].isBase = false;
-	cheackbox[0][5].sprite = 0;
-
-	randomColor = rand() % 5;
-
-	cheackbox[0][5].color = randomColor;	
+	cheackboxs[0][5].isSelected = true;
+	cheackboxs[0][5].isFree = false;
+	cheackboxs[0][5].isBase = false;
+	cheackboxs[0][5].sprite = 0;
+	randomColor = rand() % 2;
+	cheackboxs[0][5].color = randomColor;	
 }
 
 bool board::endGame()
 {
 	bool endGame = false;
 
-	if (cheackbox[1][5].isBase && !cheackbox[2][5].isFree)
+	if (cheackboxs[1][5].isBase && !cheackboxs[2][5].isFree)
 	{
 		endGame = true;
 	}
 
 	return endGame;
+}
+
+bool board::updateSprite()
+{
+	bool success = false;
+	
+	for (int y = 0; y < 16; y++)
+	{
+		for (int x = 0; x < 11; x++)
+		{
+			if (!cheackboxs[y][x].isFree)
+			{
+				int color = cheackboxs[y][x].color;
+				bool up = false, down = false, left = false, right = false;
+				
+				// check up 
+				if (!cheackboxs[y - 1][x].isFree && cheackboxs[y - 1][x].color == color)
+				{
+					up = true;
+					success = true;
+				}
+
+				//check down
+				if (!cheackboxs[y + 1][x].isFree && cheackboxs[y + 1][x].color == color)
+				{
+					down = true;
+					success = true;
+				}
+
+				//check left
+				if (!cheackboxs[y][x - 1].isFree && cheackboxs[y][x - 1].color == color)
+				{
+					left = true;
+					success = true;
+				}
+
+				//check right
+				if (!cheackboxs[y][x + 1].isFree && cheackboxs[y][x + 1].color == color)
+				{
+					right = true;
+					success = true;
+				}
+
+				if (up && down && left && right)
+				{
+					cheackboxs[y][x].sprite = 15;
+				}
+				else if (up && left && right)
+				{
+					cheackboxs[y][x].sprite = 14;
+				}
+				else if (down && left && right)
+				{
+					cheackboxs[y][x].sprite = 13;
+				}
+				else if (up && down && left)
+				{
+					cheackboxs[y][x].sprite = 11;
+				}
+				else if (up && down && right)
+				{
+					cheackboxs[y][x].sprite = 7;
+				}
+				else if (up && down)
+				{
+					cheackboxs[y][x].sprite = 3;
+				}
+				else if (up && left)
+				{
+					cheackboxs[y][x].sprite = 10;
+				}
+				else if (up && right)
+				{
+					cheackboxs[y][x].sprite = 6;
+				}
+				else if (down && left)
+				{
+					cheackboxs[y][x].sprite = 9;
+				}
+				else if (down && right)
+				{
+					cheackboxs[y][x].sprite = 5;
+				}
+				else if (left && right)
+				{
+					cheackboxs[y][x].sprite = 12;
+				}
+				else if (up)
+				{
+					cheackboxs[y][x].sprite = 2;
+				}
+				else if (down)
+				{
+					cheackboxs[y][x].sprite = 1;
+				}
+				else if (left)
+				{
+					cheackboxs[y][x].sprite = 8;
+				}
+				else if (right)
+				{
+					cheackboxs[y][x].sprite = 4;
+				}
+				else
+				{
+					cheackboxs[y][x].sprite = 0;
+				}
+			}
+		}
+	}
+
+	return success;
+}
+
+bool board::checkDeletePuyo()
+{
+	bool success = false;
+
+	for (int y = 15; y > -1; y--)
+	{
+		for (int x = 10; x > -1; x--)
+		{
+			if (!cheackboxs[y][x].isFree)
+			{
+				//delete array with value to delete puyos
+				for (int i = 0; i < 10; i++)
+				{
+					deletesPuyos[i].x = 0;
+					deletesPuyos[i].y = 0;
+					deletesPuyos[i].empty = true;
+				}
+
+				deletePuyos(y, x, NULL, NULL);
+				
+				if (!deletesPuyos[3].empty)
+				{
+					//delete puyos
+					for (int i = 0; i < 10; i++)
+					{
+						if (!deletesPuyos[i].empty)
+						{
+							cheackboxs[deletesPuyos[i].y][deletesPuyos[i].x].isFree = true;
+							/*cheackboxs[deletesPuyos[i].y][deletesPuyos[i].x].isBase = false;
+							cheackboxs[deletesPuyos[i].y][deletesPuyos[i].x].isSelected = false;*/
+						}
+					}
+
+					success = true;
+				}
+			}
+		}
+	}
+
+	return success;
+}
+
+void board::deletePuyos(int y, int x, int originX, int originY)
+{
+	int color = cheackboxs[y][x].color;
+	
+	printf("Y: %d X: %d - originY: %d originX: %d \n", y, x, originY, originX);
+
+	//up
+	if (!cheackboxs[y - 1][x].isFree && cheackboxs[y - 1][x].color == color && !compareBoxes(cheackboxs[y][x],cheackboxs[originY][originX]))
+	{
+		for (int i = 0; i < 10; i++)
+		{
+			if (deletesPuyos[i].empty) 
+			{
+				deletesPuyos[i].x = x;
+				deletesPuyos[i].y = y;
+				deletesPuyos[i].empty = false;
+			}
+		}
+
+		deletePuyos(y - 1, x, x, y);
+	}
+	
+	//down
+	if (!cheackboxs[y + 1][x].isFree && cheackboxs[y + 1][x].color == color && !compareBoxes(cheackboxs[y][x], cheackboxs[originY][originX]))
+	{
+		for (int i = 0; i < 10; i++)
+		{
+			if (deletesPuyos[i].empty)
+			{
+				deletesPuyos[i].x = x;
+				deletesPuyos[i].y = y;
+				deletesPuyos[i].empty = false;
+			}
+		}
+
+		deletePuyos(y + 1, x, x, y);
+	}
+	
+	//left
+	if (!cheackboxs[y][x - 1].isFree && cheackboxs[y][x - 1].color == color && !compareBoxes(cheackboxs[y][x], cheackboxs[originY][originX]))
+	{
+		for (int i = 0; i < 10; i++)
+		{
+			if (deletesPuyos[i].empty)
+			{
+				deletesPuyos[i].x = x;
+				deletesPuyos[i].y = y;
+				deletesPuyos[i].empty = false;
+			}
+		}
+
+		deletePuyos(y, x - 1, x, y);
+	}
+	
+	//right
+	if (!cheackboxs[y][x + 1].isFree && cheackboxs[y][x + 1].color == color && !compareBoxes(cheackboxs[y][x], cheackboxs[originY][originX]))
+	{
+		for (int i = 0; i < 10; i++)
+		{
+			if (deletesPuyos[i].empty)
+			{
+				deletesPuyos[i].x = x;
+				deletesPuyos[i].y = y;
+				deletesPuyos[i].empty = false;
+			}
+		}
+
+		deletePuyos(y + 1, x, x, y);
+	}
+}
+
+bool board::compareBoxes(cheackbox box1, cheackbox box2)
+{
+	bool success = false;
+
+	if (box1.box.x == box2.box.x && box1.box.y == box2.box.y)
+	{
+		success = true;
+	}
+
+	return success;
 }
