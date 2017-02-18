@@ -26,5 +26,8 @@ class board
 		void moveRight();
 		void moveLeft();
 
+		bool moveDown();
+
+		void newPuyos();
 };
 

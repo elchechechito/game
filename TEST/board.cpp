@@ -32,7 +32,6 @@ board::board()
 	cheackbox[0][5].sprite = 0;
 }
 
-
 board::~board()
 {
 }
@@ -81,12 +80,19 @@ void board::startGameBoard()
 					gamehandleEvent(e);
 				}
 
+				bool moved = moveDown();
+
+				if (!moved)
+				{
+					newPuyos();
+				}
+
 				printBackground(randomBackground);
 				printBoard();
 								
 				//Update screen
 				SDL_RenderPresent(sdl.gRenderer);
-				SDL_Delay(100);
+				SDL_Delay(200);
 
 			}
 		}
@@ -227,8 +233,6 @@ void board::moveCheackbox(SDL_Event & e)
 				break;
 		}
 	}
-
-	//moveDown();
 }
 
 void board::turnPuyo()
@@ -658,4 +662,71 @@ void board::moveLeft()
 			}
 		}
 	}
+}
+
+bool board::moveDown()
+{
+	bool success = false;
+	
+	for (int y = 14; y > -1; y--)
+	{
+		for (int x = 10; x > -1; x--)
+		{
+			if (!cheackbox[y][x].isFree && cheackbox[y + 1][x].isFree)
+			{
+				cheackbox[y + 1][x].isFree =		cheackbox[y][x].isFree;
+				cheackbox[y + 1][x].isSelected =	cheackbox[y][x].isSelected;
+				cheackbox[y + 1][x].isBase =		cheackbox[y][x].isBase;
+				cheackbox[y + 1][x].color =			cheackbox[y][x].color;
+				cheackbox[y + 1][x].sprite =		cheackbox[y][x].sprite;
+
+				cheackbox[y][x].isFree = true;
+				cheackbox[y][x].isSelected = false;
+				cheackbox[y][x].isBase = false;
+				
+				success = true;
+								
+			}
+		}
+	}
+
+	return success;
+}
+
+void board::newPuyos()
+{
+	//unselect puyos
+	for (int y = 0; y < 16; y++)
+	{
+		for (int x = 0; x < 11; x++)
+		{
+			if (cheackbox[y][x].isSelected)
+			{
+				cheackbox[y][x].isSelected = false;
+				cheackbox[y][x].isBase = false;
+			}
+		}
+	}
+
+	cheackbox[1][5].isSelected = true;
+	cheackbox[1][5].isFree = false;
+	cheackbox[1][5].isBase = true;
+	cheackbox[1][5].sprite = 0;
+
+	int randomColor = rand() % 5;
+
+	cheackbox[1][5].color = randomColor;
+
+	cheackbox[0][5].isSelected = true;
+	cheackbox[0][5].isFree = false;
+	cheackbox[0][5].isBase = false;
+	cheackbox[0][5].sprite = 0;
+
+	randomColor = rand() % 5;
+
+	cheackbox[0][5].color = randomColor;
+
+
+
+
 }

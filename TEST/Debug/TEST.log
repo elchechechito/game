@@ -1,4 +1,7 @@
 ﻿  board.cpp
-c:\users\jose.ramirez\desktop\test\test_puyo\puyo\game\test\board.cpp(65): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+c:\users\jose.ramirez\desktop\test\test_puyo\puyo\game\test\board.cpp(64): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+  Generating Code...
+  Skipping... (no relevant changes detected)
+  TEST.cpp
   TEST.vcxproj -> C:\Users\jose.ramirez\Desktop\TEST\TEST_puyo\Puyo\game\Debug\TEST.exe
   TEST.vcxproj -> C:\Users\jose.ramirez\Desktop\TEST\TEST_puyo\Puyo\game\Debug\TEST.pdb (Partial PDB)
