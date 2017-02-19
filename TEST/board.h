@@ -1,57 +1,56 @@
 #include <SDL.h>
 #include "cheackbox.h"
 #include "loadSDL.h"
-#pragma once
+
 class board
 {
-	public:
+public:
 
-		struct StructDeletesPuyos {
-			int x;
-			int y;
-			bool empty;
-		};
+	board();
+	~board();
 
-		StructDeletesPuyos deletesPuyos[10];
+	struct StructDeletesPuyos {
+		int x;
+		int y;
+		bool empty;
+		bool visited;
+	};
 
-		int timeDelay;
-		int nivel;
+	StructDeletesPuyos deletesPuyos[10];
 
-		board();
-		~board();
+	cheackbox cheackboxs[16][11];
+	loadSDL sdl;
 
-		cheackbox cheackboxs[16][11];
-		loadSDL sdl;
+	int timeDelay;
+	int nivel;
 
-		void startGameBoard();
-		void printBackground(int randomBackground);
-		
-		void printBoard();
+	void startGameBoard();
+	void printBackground(int randomBackground);
 
-		void gamehandleEvent(SDL_Event& e);
+	void printBoard();
 
-		bool cheackboxIsSelected();
+	void gamehandleEvent(SDL_Event& e);
 
-		void moveCheackbox(SDL_Event &e);
+	bool cheackboxIsSelected();
 
-		void turnPuyo();
-		void moveRight();
-		void moveLeft();
+	void moveCheackbox(SDL_Event &e);
 
-		bool moveDown();
+	void turnPuyo();
+	void moveRight();
+	void moveLeft();
 
-		void newPuyos();
+	bool moveDown();
 
-		bool endGame();
+	void newPuyos();
 
-		bool updateSprite();
+	bool endGame();
 
-		bool checkDeletePuyo();
+	bool updateSprite();
 
-		void deletePuyos(int x, int y, int originX, int OriginY);
+	bool checkDeletePuyo();
 
-		bool compareBoxes(cheackbox box1, cheackbox box2);
+	void deletePuyos(int x, int y);
 
+	bool isVisited(int x, int y);
 
 };
-
