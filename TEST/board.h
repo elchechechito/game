@@ -14,6 +14,9 @@ class board
 
 		StructDeletesPuyos deletesPuyos[10];
 
+		int timeDelay;
+		int nivel;
+
 		board();
 		~board();
 
