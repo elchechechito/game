@@ -9,6 +9,8 @@ public:
 	board();
 	~board();
 
+	int m_timestamp;
+
 	struct StructDeletesPuyos {
 		int x;
 		int y;
