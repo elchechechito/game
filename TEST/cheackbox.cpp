@@ -2,7 +2,7 @@
 
 
 
-cheackbox::cheackbox()
+cheackbox::cheackbox() : isFalling(true)
 {
 	
 }

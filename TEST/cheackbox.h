@@ -16,6 +16,7 @@ public:
 
 	bool isSelected;
 	bool isBase;
+	bool isFalling;
 
 };
 
