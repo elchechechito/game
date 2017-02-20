@@ -22,6 +22,19 @@ board::board()
 		}
 	}
 
+	srand(time(0));
+
+	for (int i = 0; i < 3; i++)
+	{
+		int randomX = rand() % 11;
+		int randomY = rand() % 16;
+
+		cheackboxs[randomY][randomX].isFree = false;
+		cheackboxs[randomY][randomX].isSelected = false;
+		cheackboxs[randomY][randomX].isBase = false;
+		cheackboxs[randomY][randomX].color = 6;
+	}
+
 	timeDelay = 500;
 	nivel = 1;
 }
@@ -57,7 +70,7 @@ void board::startGameBoard()
 			int frame = 0;
 
 			//Random background
-			srand(time(0));
+			//srand(time(0));
 			int randomBackground = rand() % 4;
 
 			printf("\nHola bienvenido a puyo puyo\n\n");
@@ -166,6 +179,10 @@ void board::printBoard()
 
 				case 5:
 					puyoClip = &sdl.pinkPuyoSprite[sprite];
+					break;
+
+				case 6:
+					puyoClip = &sdl.badPuyoSprite;
 					break;
 				}
 
@@ -954,7 +971,7 @@ bool board::moveDown()
 	{
 		for (int x = 10; x > -1; x--)
 		{
-			if (!cheackboxs[y][x].isFree && cheackboxs[y + 1][x].isFree)
+			if (!cheackboxs[y][x].isFree && cheackboxs[y + 1][x].isFree && cheackboxs[y][x].color != 6)
 			{
 				cheackboxs[y + 1][x].isFree = cheackboxs[y][x].isFree;
 				cheackboxs[y + 1][x].isSelected = cheackboxs[y][x].isSelected;
@@ -1235,7 +1252,7 @@ bool board::checkDeletePuyo()
 					nivel = nivel + 1;
 					printf("\nNivel: %d", nivel);
 
-					timeDelay = timeDelay - 25;
+					timeDelay = timeDelay - 40;
 					success = true;
 				}
 			}

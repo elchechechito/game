@@ -159,6 +159,12 @@ bool loadSDL::loadMedia()
 			pinkPuyoSprite[i].h = 31;
 		}
 
+		//cargar puyo malo
+		badPuyoSprite.x = 0;
+		badPuyoSprite.y = 238;
+		badPuyoSprite.w = 33;
+		badPuyoSprite.h = 31;
+
 	}
 
 	gTextureBackground = loadTexture("img/background.png");
