@@ -2,7 +2,7 @@
 #include <time.h>
 #include <random>
 
-board::board()
+board::board() : m_timestamp(0)
 {
 	for (int y = 0; y < 16; y++)
 	{
@@ -30,6 +30,7 @@ board::~board()
 
 void board::startGameBoard()
 {
+	m_timestamp = SDL_GetTicks();
 	if (!sdl.init())
 	{
 		printf("Failed to initialize!\n");
@@ -75,24 +76,29 @@ void board::startGameBoard()
 					gamehandleEvent(e);
 				}
 
-				bool moved = moveDown();
-
-				if (!moved)
+				int elapsed_time = SDL_GetTicks() - m_timestamp;
+				if (elapsed_time > timeDelay)
 				{
-					bool isUpdate = updateSprite();
+					m_timestamp = SDL_GetTicks();
+					bool moved = moveDown();
 
-					if (!isUpdate)
+					if (!moved)
 					{
-						bool isDeletePuyos = checkDeletePuyo();
+						bool isUpdate = updateSprite();
 
-						if (!isDeletePuyos)
+						if (!isUpdate)
 						{
-							/*newPuyos();
-							quit = endGame();*/
-						}
+							bool isDeletePuyos = checkDeletePuyo();
 
-						newPuyos();
-						quit = endGame();
+							if (!isDeletePuyos)
+							{
+								/*newPuyos();
+								quit = endGame();*/
+							}
+
+							newPuyos();
+							quit = endGame();
+						}
 					}
 				}
 
@@ -101,7 +107,7 @@ void board::startGameBoard()
 
 				//Update screen
 				SDL_RenderPresent(sdl.gRenderer);
-				SDL_Delay(timeDelay);
+				SDL_Delay(10);
 
 			}
 		}
