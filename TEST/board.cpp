@@ -6,12 +6,15 @@ board::board()
 {
 	m_timestamp = 0;
 
-	for (int y = 0; y < 16; y++)
+	rows = 16;
+	columns = 8;
+
+	for (int y = 0; y < rows; y++)
 	{
-		for (int x = 0; x < 11; x++)
+		for (int x = 0; x < columns; x++)
 		{
-			cheackboxs[y][x].box.x = 60 + (33 * x);
-			cheackboxs[y][x].box.y = 60 + (31 * y);
+			cheackboxs[y][x].box.x = 50 + (33 * x);
+			cheackboxs[y][x].box.y = 50 + (31 * y);
 			cheackboxs[y][x].box.w = 33;
 			cheackboxs[y][x].box.h = 31;
 
@@ -26,8 +29,8 @@ board::board()
 
 	for (int i = 0; i < 3; i++)
 	{
-		int randomX = rand() % 11;
-		int randomY = rand() % 16;
+		int randomX = rand() % columns;
+		int randomY = rand() % rows;
 
 		cheackboxs[randomY][randomX].isFree = false;
 		cheackboxs[randomY][randomX].isSelected = false;
@@ -138,7 +141,7 @@ void board::printBackground(int randomBackground)
 	SDL_SetRenderDrawBlendMode(sdl.gRenderer, SDL_BLENDMODE_BLEND);
 
 	//Render red filled quad
-	SDL_Rect fillRect = { 50, 50, 390, 515 };
+	SDL_Rect fillRect = { 50, 50, columns * 33, rows * 31 };
 	SDL_SetRenderDrawColor(sdl.gRenderer, 91, 152, 219, 150);
 	SDL_RenderFillRect(sdl.gRenderer, &fillRect);
 }
@@ -146,9 +149,9 @@ void board::printBackground(int randomBackground)
 void board::printBoard()
 {
 	//print the board
-	for (int y = 0; y < 16; y++)
+	for (int y = 0; y < rows; y++)
 	{
-		for (int x = 0; x < 11; x++)
+		for (int x = 0; x < columns; x++)
 		{
 			if (cheackboxs[y][x].isFree == false)
 			{
@@ -202,9 +205,9 @@ void board::gamehandleEvent(SDL_Event & e)
 
 bool board::cheackboxIsSelected()
 {
-	for (int y = 0; y < 16; y++)
+	for (int y = 0; y < rows; y++)
 	{
-		for (int x = 0; x < 11; x++)
+		for (int x = 0; x < columns; x++)
 		{
 			if (cheackboxs[y][x].isSelected)
 			{
@@ -241,9 +244,9 @@ void board::moveCheackbox(SDL_Event & e)
 
 void board::turnPuyo()
 {
-	for (int y = 0; y < 16; y++)
+	for (int y = 0; y < rows; y++)
 	{
-		for (int x = 0; x < 11; x++)
+		for (int x = 0; x < columns; x++)
 		{
 			//search the puyo base
 			if (cheackboxs[y][x].isBase)
@@ -252,7 +255,7 @@ void board::turnPuyo()
 				if (cheackboxs[y - 1][x].isSelected)
 				{
 					//if the puyo base is in the last box on the right
-					if (x == 10 && cheackboxs[y][x - 1].isFree)
+					if (x == columns -1 && cheackboxs[y][x - 1].isFree)
 					{
 						//move puyo base to left
 						cheackboxs[y][x - 1].isFree = cheackboxs[y][x].isFree;
@@ -299,7 +302,7 @@ void board::turnPuyo()
 				//if the second puyo is on the right
 				else if (cheackboxs[y][x + 1].isSelected)
 				{
-					if (cheackboxs[y + 1][x].isFree && y != 15)
+					if (cheackboxs[y + 1][x].isFree && y != rows -1)
 					{
 						// right puyo to dow
 						cheackboxs[y + 1][x].isFree = cheackboxs[y][x + 1].isFree;
@@ -398,9 +401,9 @@ void board::turnPuyo()
 
 void board::moveRight()
 {
-	for (int y = 0; y < 16; y++)
+	for (int y = 0; y < rows; y++)
 	{
-		for (int x = 0; x < 11; x++)
+		for (int x = 0; x < columns; x++)
 		{
 			//find the puyo base
 			if (cheackboxs[y][x].isBase)
@@ -408,7 +411,7 @@ void board::moveRight()
 				//if the second puyo is up
 				if (cheackboxs[y - 1][x].isSelected)
 				{
-					if (x < 10 && cheackboxs[y][x + 1].isFree && cheackboxs[y - 1][x + 1].isFree)
+					if (x < columns -1 && cheackboxs[y][x + 1].isFree && cheackboxs[y - 1][x + 1].isFree)
 					{
 						// move the puyo base to right
 						cheackboxs[y][x + 1].isFree = cheackboxs[y][x].isFree;
@@ -436,7 +439,7 @@ void board::moveRight()
 
 						break;
 					}
-					else if (x == 10 && cheackboxs[y][0].isFree && cheackboxs[y - 1][0].isFree)
+					else if (x == columns -1 && cheackboxs[y][0].isFree && cheackboxs[y - 1][0].isFree)
 					{
 						// move the puyo base to right
 						cheackboxs[y][0].isFree = cheackboxs[y][x].isFree;
@@ -469,7 +472,7 @@ void board::moveRight()
 				//if the second puyo is down
 				else if (cheackboxs[y + 1][x].isSelected)
 				{
-					if (x < 10 && cheackboxs[y][x + 1].isFree && cheackboxs[y + 1][x + 1].isFree)
+					if (x < columns -1 && cheackboxs[y][x + 1].isFree && cheackboxs[y + 1][x + 1].isFree)
 					{
 						// move the puyo base to right
 						cheackboxs[y][x + 1].isFree = cheackboxs[y][x].isFree;
@@ -497,7 +500,7 @@ void board::moveRight()
 
 						break;
 					}
-					else if (x == 10 && cheackboxs[y][0].isFree && cheackboxs[y + 1][0].isFree)
+					else if (x == columns -1 && cheackboxs[y][0].isFree && cheackboxs[y + 1][0].isFree)
 					{
 						// move the puyo base to right
 						cheackboxs[y][0].isFree = cheackboxs[y][x].isFree;
@@ -528,7 +531,7 @@ void board::moveRight()
 				}
 
 				//if the second puyo is on the left
-				else if (cheackboxs[y][x - 1].isSelected || (x == 0 && cheackboxs[y][10].isSelected))
+				else if (cheackboxs[y][x - 1].isSelected || (x == 0 && cheackboxs[y][columns-1].isSelected))
 				{
 					if (x == 0 && cheackboxs[y][x + 1].isFree)
 					{
@@ -540,20 +543,20 @@ void board::moveRight()
 						cheackboxs[y][x + 1].sprite = cheackboxs[y][x].sprite;
 
 						// move the second puyo to right
-						cheackboxs[y][0].isFree = cheackboxs[y][10].isFree;
-						cheackboxs[y][0].isSelected = cheackboxs[y][10].isSelected;
-						cheackboxs[y][0].isBase = cheackboxs[y][10].isBase;
-						cheackboxs[y][0].color = cheackboxs[y][10].color;
-						cheackboxs[y][0].sprite = cheackboxs[y][10].sprite;
+						cheackboxs[y][0].isFree = cheackboxs[y][columns -1].isFree;
+						cheackboxs[y][0].isSelected = cheackboxs[y][columns - 1].isSelected;
+						cheackboxs[y][0].isBase = cheackboxs[y][columns - 1].isBase;
+						cheackboxs[y][0].color = cheackboxs[y][columns - 1].color;
+						cheackboxs[y][0].sprite = cheackboxs[y][columns - 1].sprite;
 
 						//delete second puyo
-						cheackboxs[y][10].isFree = true;
-						cheackboxs[y][10].isSelected = false;
-						cheackboxs[y][10].isBase = false;
+						cheackboxs[y][columns -1].isFree = true;
+						cheackboxs[y][columns - 1].isSelected = false;
+						cheackboxs[y][columns - 1].isBase = false;
 
 						break;
 					}
-					else if (x < 10 && cheackboxs[y][x + 1].isFree)
+					else if (x < columns -1 && cheackboxs[y][x + 1].isFree)
 					{
 						// move the second puyo to right
 						cheackboxs[y][x + 1].isFree = cheackboxs[y][x].isFree;
@@ -576,7 +579,7 @@ void board::moveRight()
 
 						break;
 					}
-					else if (x == 10 && cheackboxs[y][0].isFree)
+					else if (x == columns -1 && cheackboxs[y][0].isFree)
 					{
 						// move the puyo base to right
 						cheackboxs[y][0].isFree = cheackboxs[y][x].isFree;
@@ -602,9 +605,9 @@ void board::moveRight()
 				}
 
 				//if the second puyo is on the right
-				else if (cheackboxs[y][x + 1].isSelected || (x == 10 && cheackboxs[y][0].isSelected))
+				else if (cheackboxs[y][x + 1].isSelected || (x == columns-1 && cheackboxs[y][0].isSelected))
 				{
-					if (x < 9 && cheackboxs[y][x + 2].isFree)
+					if (x < columns -2 && cheackboxs[y][x + 2].isFree)
 					{
 						// move the second puyo to right
 						cheackboxs[y][x + 2].isFree = cheackboxs[y][x + 1].isFree;
@@ -627,7 +630,7 @@ void board::moveRight()
 
 						break;
 					}
-					else if (x == 9 && cheackboxs[y][0].isFree)
+					else if (x == columns -2 && cheackboxs[y][0].isFree)
 					{
 						// move the second puyo to right
 						cheackboxs[y][0].isFree = cheackboxs[y][x + 1].isFree;
@@ -650,7 +653,7 @@ void board::moveRight()
 
 						break;
 					}
-					else if (x == 10 && cheackboxs[y][1].isFree)
+					else if (x == columns-1 && cheackboxs[y][1].isFree)
 					{
 						// move the second puyo to right
 						cheackboxs[y][1].isFree = cheackboxs[y][0].isFree;
@@ -681,9 +684,9 @@ void board::moveRight()
 
 void board::moveLeft()
 {
-	for (int y = 0; y < 16; y++)
+	for (int y = 0; y < rows; y++)
 	{
-		for (int x = 0; x < 11; x++)
+		for (int x = 0; x < columns; x++)
 		{
 			//find the puyo base
 			if (cheackboxs[y][x].isBase)
@@ -719,14 +722,14 @@ void board::moveLeft()
 
 						break;
 					}
-					else if (x == 0 && cheackboxs[y][10].isFree && cheackboxs[y - 1][10].isFree)
+					else if (x == 0 && cheackboxs[y][columns -1].isFree && cheackboxs[y - 1][columns -1].isFree)
 					{
 						// move the puyo base to left
-						cheackboxs[y][10].isFree = cheackboxs[y][x].isFree;
-						cheackboxs[y][10].isSelected = cheackboxs[y][x].isSelected;
-						cheackboxs[y][10].isBase = cheackboxs[y][x].isBase;
-						cheackboxs[y][10].color = cheackboxs[y][x].color;
-						cheackboxs[y][10].sprite = cheackboxs[y][x].sprite;
+						cheackboxs[y][columns -1].isFree = cheackboxs[y][x].isFree;
+						cheackboxs[y][columns - 1].isSelected = cheackboxs[y][x].isSelected;
+						cheackboxs[y][columns - 1].isBase = cheackboxs[y][x].isBase;
+						cheackboxs[y][columns - 1].color = cheackboxs[y][x].color;
+						cheackboxs[y][columns - 1].sprite = cheackboxs[y][x].sprite;
 
 						//delete puyo base
 						cheackboxs[y][x].isFree = true;
@@ -734,11 +737,11 @@ void board::moveLeft()
 						cheackboxs[y][x].isBase = false;
 
 						// move the second puyo to left
-						cheackboxs[y - 1][10].isFree = cheackboxs[y - 1][x].isFree;
-						cheackboxs[y - 1][10].isSelected = cheackboxs[y - 1][x].isSelected;
-						cheackboxs[y - 1][10].isBase = cheackboxs[y - 1][x].isBase;
-						cheackboxs[y - 1][10].color = cheackboxs[y - 1][x].color;
-						cheackboxs[y - 1][10].sprite = cheackboxs[y - 1][x].sprite;
+						cheackboxs[y - 1][columns - 1].isFree = cheackboxs[y - 1][x].isFree;
+						cheackboxs[y - 1][columns - 1].isSelected = cheackboxs[y - 1][x].isSelected;
+						cheackboxs[y - 1][columns - 1].isBase = cheackboxs[y - 1][x].isBase;
+						cheackboxs[y - 1][columns - 1].color = cheackboxs[y - 1][x].color;
+						cheackboxs[y - 1][columns - 1].sprite = cheackboxs[y - 1][x].sprite;
 
 						//delete second puyo
 						cheackboxs[y - 1][x].isFree = true;
@@ -780,14 +783,14 @@ void board::moveLeft()
 
 						break;
 					}
-					else if (x == 0 && cheackboxs[y][10].isFree && cheackboxs[y + 1][10].isFree)
+					else if (x == 0 && cheackboxs[y][columns -1].isFree && cheackboxs[y + 1][columns -1].isFree)
 					{
 						// move the puyo base to left
-						cheackboxs[y][10].isFree = cheackboxs[y][x].isFree;
-						cheackboxs[y][10].isSelected = cheackboxs[y][x].isSelected;
-						cheackboxs[y][10].isBase = cheackboxs[y][x].isBase;
-						cheackboxs[y][10].color = cheackboxs[y][x].color;
-						cheackboxs[y][10].sprite = cheackboxs[y][x].sprite;
+						cheackboxs[y][columns - 1].isFree = cheackboxs[y][x].isFree;
+						cheackboxs[y][columns - 1].isSelected = cheackboxs[y][x].isSelected;
+						cheackboxs[y][columns - 1].isBase = cheackboxs[y][x].isBase;
+						cheackboxs[y][columns - 1].color = cheackboxs[y][x].color;
+						cheackboxs[y][columns - 1].sprite = cheackboxs[y][x].sprite;
 
 						//delete puyo base
 						cheackboxs[y][x].isFree = true;
@@ -795,11 +798,11 @@ void board::moveLeft()
 						cheackboxs[y][x].isBase = false;
 
 						// move the second puyo to right
-						cheackboxs[y + 1][10].isFree = cheackboxs[y + 1][x].isFree;
-						cheackboxs[y + 1][10].isSelected = cheackboxs[y + 1][x].isSelected;
-						cheackboxs[y + 1][10].isBase = cheackboxs[y + 1][x].isBase;
-						cheackboxs[y + 1][10].color = cheackboxs[y + 1][x].color;
-						cheackboxs[y + 1][10].sprite = cheackboxs[y + 1][x].sprite;
+						cheackboxs[y + 1][columns - 1].isFree = cheackboxs[y + 1][x].isFree;
+						cheackboxs[y + 1][columns - 1].isSelected = cheackboxs[y + 1][x].isSelected;
+						cheackboxs[y + 1][columns - 1].isBase = cheackboxs[y + 1][x].isBase;
+						cheackboxs[y + 1][columns - 1].color = cheackboxs[y + 1][x].color;
+						cheackboxs[y + 1][columns - 1].sprite = cheackboxs[y + 1][x].sprite;
 
 						//delete second puyo
 						cheackboxs[y + 1][x].isFree = true;
@@ -811,7 +814,7 @@ void board::moveLeft()
 				}
 
 				//if the second puyo is on the left
-				else if (cheackboxs[y][x - 1].isSelected || (x == 0 && cheackboxs[y][10].isSelected))
+				else if (cheackboxs[y][x - 1].isSelected || (x == 0 && cheackboxs[y][columns - 1].isSelected))
 				{
 					if (x > 1 && cheackboxs[y][x - 2].isFree)
 					{
@@ -836,14 +839,14 @@ void board::moveLeft()
 
 						break;
 					}
-					else if (x == 1 && cheackboxs[y][10].isFree)
+					else if (x == 1 && cheackboxs[y][columns - 1].isFree)
 					{
 						// move the second puyo to left
-						cheackboxs[y][10].isFree =		cheackboxs[y][x - 1].isFree;
-						cheackboxs[y][10].isSelected =	cheackboxs[y][x - 1].isSelected;
-						cheackboxs[y][10].isBase =		cheackboxs[y][x - 1].isBase;
-						cheackboxs[y][10].color =		cheackboxs[y][x - 1].color;
-						cheackboxs[y][10].sprite =		cheackboxs[y][x - 1].sprite;
+						cheackboxs[y][columns - 1].isFree =		cheackboxs[y][x - 1].isFree;
+						cheackboxs[y][columns - 1].isSelected =	cheackboxs[y][x - 1].isSelected;
+						cheackboxs[y][columns - 1].isBase =		cheackboxs[y][x - 1].isBase;
+						cheackboxs[y][columns - 1].color =		cheackboxs[y][x - 1].color;
+						cheackboxs[y][columns - 1].sprite =		cheackboxs[y][x - 1].sprite;
 
 						// move the puyo base to left
 						cheackboxs[y][x - 1].isFree = cheackboxs[y][x].isFree;
@@ -859,21 +862,21 @@ void board::moveLeft()
 
 						break;
 					}
-					else if (x == 0 && cheackboxs[y][9].isFree)
+					else if (x == 0 && cheackboxs[y][columns - 2].isFree)
 					{
 						// move the second puyo to left
-						cheackboxs[y][9].isFree =		cheackboxs[y][10].isFree;
-						cheackboxs[y][9].isSelected =	cheackboxs[y][10].isSelected;
-						cheackboxs[y][9].isBase =		cheackboxs[y][10].isBase;
-						cheackboxs[y][9].color =		cheackboxs[y][10].color;
-						cheackboxs[y][9].sprite =		cheackboxs[y][10].sprite;
+						cheackboxs[y][columns - 2].isFree =		cheackboxs[y][columns - 1].isFree;
+						cheackboxs[y][columns - 2].isSelected =	cheackboxs[y][columns - 1].isSelected;
+						cheackboxs[y][columns - 2].isBase =		cheackboxs[y][columns - 1].isBase;
+						cheackboxs[y][columns - 2].color =		cheackboxs[y][columns - 1].color;
+						cheackboxs[y][columns - 2].sprite =		cheackboxs[y][columns - 1].sprite;
 
 						// move the puyo base to left
-						cheackboxs[y][10].isFree = cheackboxs[y][x].isFree;
-						cheackboxs[y][10].isSelected = cheackboxs[y][x].isSelected;
-						cheackboxs[y][10].isBase = cheackboxs[y][x].isBase;
-						cheackboxs[y][10].color = cheackboxs[y][x].color;
-						cheackboxs[y][10].sprite = cheackboxs[y][x].sprite;
+						cheackboxs[y][columns - 1].isFree = cheackboxs[y][x].isFree;
+						cheackboxs[y][columns - 1].isSelected = cheackboxs[y][x].isSelected;
+						cheackboxs[y][columns - 1].isBase = cheackboxs[y][x].isBase;
+						cheackboxs[y][columns - 1].color = cheackboxs[y][x].color;
+						cheackboxs[y][columns - 1].sprite = cheackboxs[y][x].sprite;
 
 						//delete second puyo
 						cheackboxs[y][x].isFree = true;
@@ -885,9 +888,9 @@ void board::moveLeft()
 				}
 
 				//if the second puyo is on the right
-				else if (cheackboxs[y][x + 1].isSelected || (x == 10 && cheackboxs[y][0].isSelected))
+				else if (cheackboxs[y][x + 1].isSelected || (x == columns - 1 && cheackboxs[y][0].isSelected))
 				{
-					if (x == 10 && cheackboxs[y][x - 1].isFree)
+					if (x == columns - 1 && cheackboxs[y][x - 1].isFree)
 					{
 						// move the puyo base to left
 						cheackboxs[y][x - 1].isFree = cheackboxs[y][x].isFree;
@@ -933,14 +936,14 @@ void board::moveLeft()
 
 						break;
 					}
-					else if (x == 0 && cheackboxs[y][10].isFree)
+					else if (x == 0 && cheackboxs[y][columns - 1].isFree)
 					{
 						// move the puyo base to left
-						cheackboxs[y][10].isFree = cheackboxs[y][x].isFree;
-						cheackboxs[y][10].isSelected = cheackboxs[y][x].isSelected;
-						cheackboxs[y][10].isBase = cheackboxs[y][x].isBase;
-						cheackboxs[y][10].color = cheackboxs[y][x].color;
-						cheackboxs[y][10].sprite = cheackboxs[y][x].sprite;
+						cheackboxs[y][columns - 1].isFree = cheackboxs[y][x].isFree;
+						cheackboxs[y][columns - 1].isSelected = cheackboxs[y][x].isSelected;
+						cheackboxs[y][columns - 1].isBase = cheackboxs[y][x].isBase;
+						cheackboxs[y][columns - 1].color = cheackboxs[y][x].color;
+						cheackboxs[y][columns - 1].sprite = cheackboxs[y][x].sprite;
 
 						// move the second puyo to left
 						cheackboxs[y][x].isFree = cheackboxs[y][x + 1].isFree;
@@ -967,9 +970,9 @@ bool board::moveDown()
 {
 	bool success = false;
 
-	for (int y = 14; y > -1; y--)
+	for (int y = rows -2; y > -1; y--)
 	{
-		for (int x = 10; x > -1; x--)
+		for (int x = columns - 1; x > -1; x--)
 		{
 			if (!cheackboxs[y][x].isFree && cheackboxs[y + 1][x].isFree && cheackboxs[y][x].color != 6)
 			{
@@ -995,9 +998,9 @@ bool board::moveDown()
 void board::newPuyos()
 {
 	//unselect puyos
-	for (int y = 0; y < 16; y++)
+	for (int y = 0; y < rows; y++)
 	{
-		for (int x = 0; x < 11; x++)
+		for (int x = 0; x < columns; x++)
 		{
 			if (cheackboxs[y][x].isSelected)
 			{
@@ -1007,19 +1010,21 @@ void board::newPuyos()
 		}
 	}
 
-	cheackboxs[1][5].isSelected = true;
-	cheackboxs[1][5].isFree = false;
-	cheackboxs[1][5].isBase = true;
-	cheackboxs[1][5].sprite = 0;
-	int randomColor = (rand() % 6);
-	cheackboxs[1][5].color = randomColor;
+	int positionX = columns / 2;
 
-	cheackboxs[0][5].isSelected = true;
-	cheackboxs[0][5].isFree = false;
-	cheackboxs[0][5].isBase = false;
-	cheackboxs[0][5].sprite = 0;
+	cheackboxs[1][positionX].isSelected = true;
+	cheackboxs[1][positionX].isFree = false;
+	cheackboxs[1][positionX].isBase = true;
+	cheackboxs[1][positionX].sprite = 0;
+	int randomColor = (rand() % 6);
+	cheackboxs[1][positionX].color = randomColor;
+
+	cheackboxs[0][positionX].isSelected = true;
+	cheackboxs[0][positionX].isFree = false;
+	cheackboxs[0][positionX].isBase = false;
+	cheackboxs[0][positionX].sprite = 0;
 	randomColor = (rand() % 6);
-	cheackboxs[0][5].color = randomColor;
+	cheackboxs[0][positionX].color = randomColor;
 }
 
 bool board::endGame()
@@ -1038,9 +1043,9 @@ bool board::updateSprite()
 {
 	bool success = false;
 
-	for (int y = 0; y < 16; y++)
+	for (int y = 0; y < rows; y++)
 	{
-		for (int x = 0; x < 11; x++)
+		for (int x = 0; x < columns; x++)
 		{
 			if (!cheackboxs[y][x].isFree)
 			{
@@ -1054,7 +1059,7 @@ bool board::updateSprite()
 				}
 
 				//check down
-				if (!cheackboxs[y + 1][x].isFree && cheackboxs[y + 1][x].color == color && y != 15)
+				if (!cheackboxs[y + 1][x].isFree && cheackboxs[y + 1][x].color == color && y != rows - 1)
 				{
 					down = true;
 				}
@@ -1066,7 +1071,7 @@ bool board::updateSprite()
 				}
 
 				//check right
-				if (!cheackboxs[y][x + 1].isFree && cheackboxs[y][x + 1].color == color && x != 10)
+				if (!cheackboxs[y][x + 1].isFree && cheackboxs[y][x + 1].color == color && x != columns -1)
 				{
 					right = true;
 				}
@@ -1210,9 +1215,9 @@ bool board::checkDeletePuyo()
 {
 	bool success = false;
 
-	for (int y = 15; y > -1; y--)
+	for (int y = rows-1; y > -1; y--)
 	{
-		for (int x = 10; x > -1; x--)
+		for (int x = columns -1; x > -1; x--)
 		{
 			if (!cheackboxs[y][x].isFree)
 			{
@@ -1285,7 +1290,7 @@ void board::deletePuyos(int y, int x)
 	}
 
 	//down
-	if (!cheackboxs[y + 1][x].isFree && cheackboxs[y + 1][x].color == color && y != 15 && !isVisited(x, y + 1))
+	if (!cheackboxs[y + 1][x].isFree && cheackboxs[y + 1][x].color == color && y != rows -1 && !isVisited(x, y + 1))
 	{
 		for (int i = 0; i < 10; i++)
 		{
@@ -1321,7 +1326,7 @@ void board::deletePuyos(int y, int x)
 	}
 
 	//right
-	if (!cheackboxs[y][x + 1].isFree && cheackboxs[y][x + 1].color == color && x != 10 && !isVisited(x + 1, y))
+	if (!cheackboxs[y][x + 1].isFree && cheackboxs[y][x + 1].color == color && x != columns -1 && !isVisited(x + 1, y))
 	{
 		for (int i = 0; i < 10; i++)
 		{

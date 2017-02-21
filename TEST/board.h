@@ -11,6 +11,9 @@ public:
 
 	int m_timestamp;
 
+	int rows;
+	int columns;
+
 	struct StructDeletesPuyos {
 		int x;
 		int y;
