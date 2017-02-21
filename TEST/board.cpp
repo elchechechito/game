@@ -72,6 +72,8 @@ void board::startGameBoard()
 			//Current animation frame
 			int frame = 0;
 
+			bool pause = false;
+
 			//Random background
 			//srand(time(0));
 			int randomBackground = rand() % 4;
@@ -91,26 +93,37 @@ void board::startGameBoard()
 						quit = true;
 					}
 
-					//Handle input for the dot
-					gamehandleEvent(e);
+					if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_p)
+					{
+						pause = !pause;
+					}
+
+					if (!pause)
+					{
+						//Handle input for the dot
+						gamehandleEvent(e);
+					}
 				}
 
 				int elapsed_time = SDL_GetTicks() - m_timestamp; 
 				if (elapsed_time > timeDelay)
 				{
-					m_timestamp = SDL_GetTicks();
-					bool moved = moveDown();
-
-					if (!moved)
+					if (!pause)
 					{
-						bool isUpdate = updateSprite();
+						m_timestamp = SDL_GetTicks();
+						bool moved = moveDown();
 
-						if (!isUpdate)
+						if (!moved)
 						{
-							bool isDeletePuyos = checkDeletePuyo();
+							bool isUpdate = updateSprite();
 
-							newPuyos();
-							quit = endGame();
+							if (!isUpdate)
+							{
+								bool isDeletePuyos = checkDeletePuyo();
+
+								newPuyos();
+								quit = endGame();
+							}
 						}
 					}
 				}
