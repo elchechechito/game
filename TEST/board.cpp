@@ -49,7 +49,7 @@ board::~board()
 void board::startGameBoard()
 {
 	m_timestamp = SDL_GetTicks();
-
+	
 	if (!sdl.init())
 	{
 		printf("Failed to initialize!\n");
@@ -84,6 +84,8 @@ void board::startGameBoard()
 			//While application is running
 			while (!quit)
 			{
+				quit = endGame();
+
 				//Handle events on queue
 				while (SDL_PollEvent(&e) != 0)
 				{
@@ -122,7 +124,6 @@ void board::startGameBoard()
 								bool isDeletePuyos = checkDeletePuyo();
 
 								newPuyos();
-								quit = endGame();
 							}
 						}
 					}
@@ -1044,7 +1045,9 @@ bool board::endGame()
 {
 	bool endGame = false;
 
-	if (cheackboxs[1][5].isBase && !cheackboxs[2][5].isFree)
+	int positionX = columns / 2;
+	
+	if (cheackboxs[1][positionX].isBase && !cheackboxs[2][positionX].isFree)
 	{
 		endGame = true;
 	}
