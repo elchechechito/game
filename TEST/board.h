@@ -29,6 +29,8 @@ public:
 	int timeDelay;
 	int nivel;
 
+	bool changeDown;
+
 	void startGameBoard();
 	void printBackground(int randomBackground);
 

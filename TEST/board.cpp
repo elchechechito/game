@@ -5,6 +5,7 @@
 board::board()
 {
 	m_timestamp = 0;
+	changeDown = true;
 
 	rows = 16;
 	columns = 8;
@@ -13,8 +14,8 @@ board::board()
 	{
 		for (int x = 0; x < columns; x++)
 		{
-			cheackboxs[y][x].box.x = 50 + (33 * x);
-			cheackboxs[y][x].box.y = 50 + (31 * y);
+			cheackboxs[y][x].box.x = 40 + (33 * x);
+			cheackboxs[y][x].box.y = 40 + (31 * y);
 			cheackboxs[y][x].box.w = 33;
 			cheackboxs[y][x].box.h = 31;
 
@@ -155,7 +156,7 @@ void board::printBackground(int randomBackground)
 	SDL_SetRenderDrawBlendMode(sdl.gRenderer, SDL_BLENDMODE_BLEND);
 
 	//Render red filled quad
-	SDL_Rect fillRect = { 50, 50, columns * 33, rows * 31 };
+	SDL_Rect fillRect = { 40, 40, columns * 33, rows * 31 };
 	SDL_SetRenderDrawColor(sdl.gRenderer, 91, 152, 219, 150);
 	SDL_RenderFillRect(sdl.gRenderer, &fillRect);
 }
@@ -984,24 +985,51 @@ bool board::moveDown()
 {
 	bool success = false;
 
-	for (int y = rows -2; y > -1; y--)
+	if (changeDown)
 	{
-		for (int x = columns - 1; x > -1; x--)
+		for (int y = 1; y < rows; y++)
 		{
-			if (!cheackboxs[y][x].isFree && cheackboxs[y + 1][x].isFree && cheackboxs[y][x].color != 6)
+			for (int x = 0; x < columns; x++)
 			{
-				cheackboxs[y + 1][x].isFree = cheackboxs[y][x].isFree;
-				cheackboxs[y + 1][x].isSelected = cheackboxs[y][x].isSelected;
-				cheackboxs[y + 1][x].isBase = cheackboxs[y][x].isBase;
-				cheackboxs[y + 1][x].color = cheackboxs[y][x].color;
-				cheackboxs[y + 1][x].sprite = cheackboxs[y][x].sprite;
+				if (!cheackboxs[y][x].isFree && cheackboxs[y - 1][x].isFree && cheackboxs[y][x].color != 6)
+				{
+					cheackboxs[y - 1][x].isFree = cheackboxs[y][x].isFree;
+					cheackboxs[y - 1][x].isSelected = cheackboxs[y][x].isSelected;
+					cheackboxs[y - 1][x].isBase = cheackboxs[y][x].isBase;
+					cheackboxs[y - 1][x].color = cheackboxs[y][x].color;
+					cheackboxs[y - 1][x].sprite = cheackboxs[y][x].sprite;
 
-				cheackboxs[y][x].isFree = true;
-				cheackboxs[y][x].isSelected = false;
-				cheackboxs[y][x].isBase = false;
+					cheackboxs[y][x].isFree = true;
+					cheackboxs[y][x].isSelected = false;
+					cheackboxs[y][x].isBase = false;
 
-				success = true;
+					success = true;
 
+				}
+			}
+		}
+	}
+	else
+	{
+		for (int y = rows - 2; y > -1; y--)
+		{
+			for (int x = columns - 1; x > -1; x--)
+			{
+				if (!cheackboxs[y][x].isFree && cheackboxs[y + 1][x].isFree && cheackboxs[y][x].color != 6)
+				{
+					cheackboxs[y + 1][x].isFree = cheackboxs[y][x].isFree;
+					cheackboxs[y + 1][x].isSelected = cheackboxs[y][x].isSelected;
+					cheackboxs[y + 1][x].isBase = cheackboxs[y][x].isBase;
+					cheackboxs[y + 1][x].color = cheackboxs[y][x].color;
+					cheackboxs[y + 1][x].sprite = cheackboxs[y][x].sprite;
+
+					cheackboxs[y][x].isFree = true;
+					cheackboxs[y][x].isSelected = false;
+					cheackboxs[y][x].isBase = false;
+
+					success = true;
+
+				}
 			}
 		}
 	}
@@ -1025,20 +1053,33 @@ void board::newPuyos()
 	}
 
 	int positionX = columns / 2;
+	int firstPuyoPositionY = 0;
+	int secondPuyoPositionY = 0;
 
-	cheackboxs[1][positionX].isSelected = true;
-	cheackboxs[1][positionX].isFree = false;
-	cheackboxs[1][positionX].isBase = true;
-	cheackboxs[1][positionX].sprite = 0;
+	if (changeDown)
+	{
+		firstPuyoPositionY = rows -2;
+		secondPuyoPositionY = rows -1;
+	}
+	else
+	{
+		firstPuyoPositionY = 1;
+		secondPuyoPositionY = 0;
+	}
+
+	cheackboxs[firstPuyoPositionY][positionX].isSelected = true;
+	cheackboxs[firstPuyoPositionY][positionX].isFree = false;
+	cheackboxs[firstPuyoPositionY][positionX].isBase = true;
+	cheackboxs[firstPuyoPositionY][positionX].sprite = 0;
 	int randomColor = (rand() % 6);
-	cheackboxs[1][positionX].color = randomColor;
+	cheackboxs[firstPuyoPositionY][positionX].color = randomColor;
 
-	cheackboxs[0][positionX].isSelected = true;
-	cheackboxs[0][positionX].isFree = false;
-	cheackboxs[0][positionX].isBase = false;
-	cheackboxs[0][positionX].sprite = 0;
+	cheackboxs[secondPuyoPositionY][positionX].isSelected = true;
+	cheackboxs[secondPuyoPositionY][positionX].isFree = false;
+	cheackboxs[secondPuyoPositionY][positionX].isBase = false;
+	cheackboxs[secondPuyoPositionY][positionX].sprite = 0;
 	randomColor = (rand() % 6);
-	cheackboxs[0][positionX].color = randomColor;
+	cheackboxs[secondPuyoPositionY][positionX].color = randomColor;
 }
 
 bool board::endGame()
@@ -1047,9 +1088,23 @@ bool board::endGame()
 
 	int positionX = columns / 2;
 	
-	if (cheackboxs[1][positionX].isBase && !cheackboxs[2][positionX].isFree)
+	if (changeDown)
 	{
-		endGame = true;
+		int positionY = rows - 2;
+
+		if (cheackboxs[positionY][positionX].isBase && !cheackboxs[positionY - 1][positionX].isFree && !cheackboxs[positionY - 2][positionX].isFree)
+		{
+			endGame = true;
+		}
+	}
+	else
+	{
+		int positionY = 1;
+
+		if (cheackboxs[positionY][positionX].isBase && !cheackboxs[positionY + 1][positionX].isFree && !cheackboxs[positionY + 2][positionX].isFree)
+		{
+			endGame = true;
+		}
 	}
 
 	return endGame;
@@ -1263,10 +1318,10 @@ bool board::checkDeletePuyo()
 							cheackboxs[deletesPuyos[i].y][deletesPuyos[i].x].isFree = true;
 							cheackboxs[deletesPuyos[i].y][deletesPuyos[i].x].isBase = false;
 							cheackboxs[deletesPuyos[i].y][deletesPuyos[i].x].isSelected = false;
-
-							updateSprite();
 						}
 					}
+
+					updateSprite();
 
 					moveDown();
 

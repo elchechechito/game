@@ -32,6 +32,10 @@ public:
 	//Renders texture at given point
 	void render(int x, int y, loadSDL::Texture renderTexture,SDL_Rect* clip, bool screenSize);
 
+	//screen size
+	const static int SCREEN_WIDTH = 475;
+	const static int SCREEN_HEIGHT = 600;
+
 	//The window we'll be rendering to
 	SDL_Window* gWindow;
 
@@ -51,10 +55,6 @@ public:
 	//Texture to load background
 	Texture gTextureBackground;
 	SDL_Rect backgroundSprite[5];
-
-	//screen size
-	const static int SCREEN_WIDTH = 500;
-	const static int SCREEN_HEIGHT = 600;
 		
 };
 
