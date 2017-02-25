@@ -24,10 +24,11 @@ public:
 	StructDeletesPuyos deletesPuyos[10];
 
 	cheackbox cheackboxs[16][11];
+	cheackbox cheackboxsAux[16][11];
 	loadSDL sdl;
 
 	int timeDelay;
-	int nivel;
+	int combos;
 
 	bool changeDown;
 
@@ -59,5 +60,9 @@ public:
 	void deletePuyos(int x, int y);
 
 	bool isVisited(int x, int y);
+
+	void flipBoard();
+
+	void changePuyo();
 
 };

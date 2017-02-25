@@ -33,7 +33,7 @@ public:
 	void render(int x, int y, loadSDL::Texture renderTexture,SDL_Rect* clip, bool screenSize);
 
 	//screen size
-	const static int SCREEN_WIDTH = 475;
+	const static int SCREEN_WIDTH = 475 * 2;
 	const static int SCREEN_HEIGHT = 600;
 
 	//The window we'll be rendering to

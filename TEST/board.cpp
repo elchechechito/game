@@ -5,10 +5,10 @@
 board::board()
 {
 	m_timestamp = 0;
-	changeDown = true;
+	changeDown = false;
 
 	rows = 16;
-	columns = 8;
+	columns = 11;
 
 	for (int y = 0; y < rows; y++)
 	{
@@ -40,7 +40,7 @@ board::board()
 	}
 
 	timeDelay = 500;
-	nivel = 1;
+	combos = 0;
 }
 
 board::~board()
@@ -49,8 +49,10 @@ board::~board()
 
 void board::startGameBoard()
 {
+	//time start
 	m_timestamp = SDL_GetTicks();
 	
+	//Start SDL, SDL_Image
 	if (!sdl.init())
 	{
 		printf("Failed to initialize!\n");
@@ -70,40 +72,48 @@ void board::startGameBoard()
 			//Event handler
 			SDL_Event e;
 
-			//Current animation frame
-			int frame = 0;
-
+			//Pause flag
 			bool pause = false;
 
-			//Random background
-			//srand(time(0));
+			//Background
 			int randomBackground = rand() % 4;
 
-			printf("\nHola bienvenido a puyo puyo\n\n");
-			printf("Nivel: %d", nivel);
+			//Show welcome message and combos
+			system("CLS");
+			printf("\n Hello Welcome to Puyo Puyo\n\n");
+			printf("Combos: %d", combos);
 
 			//While application is running
 			while (!quit)
 			{
+				//validation if the new puyos 
 				quit = endGame();
 
 				//Handle events on queue
 				while (SDL_PollEvent(&e) != 0)
 				{
-					//User requests quit
+					//Player requests quit
 					if (e.type == SDL_QUIT || e.key.keysym.sym == SDLK_ESCAPE)
 					{
 						quit = true;
 					}
 
+					//Press P to pause
 					if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_p)
 					{
 						pause = !pause;
 					}
 
+					//Press F to flip
+					if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_f)
+					{
+						flipBoard();
+					}
+
+					//Don't handler movement if is on pause
 					if (!pause)
 					{
-						//Handle input for the dot
+						//Handle input
 						gamehandleEvent(e);
 					}
 				}
@@ -114,17 +124,24 @@ void board::startGameBoard()
 					if (!pause)
 					{
 						m_timestamp = SDL_GetTicks();
+						
+						//move down or up all piece
 						bool moved = moveDown();
 
 						if (!moved)
 						{
+							//Update all sprite
 							bool isUpdate = updateSprite();
 
 							if (!isUpdate)
 							{
+								//Cheack if the puyos were removed
 								bool isDeletePuyos = checkDeletePuyo();
 
-								newPuyos();
+								if (!isDeletePuyos)
+								{
+									newPuyos();
+								}
 							}
 						}
 					}
@@ -157,6 +174,11 @@ void board::printBackground(int randomBackground)
 
 	//Render red filled quad
 	SDL_Rect fillRect = { 40, 40, columns * 33, rows * 31 };
+	SDL_SetRenderDrawColor(sdl.gRenderer, 91, 152, 219, 150);
+	SDL_RenderFillRect(sdl.gRenderer, &fillRect);
+
+	//Render red filled quad player 2
+	fillRect = { 500, 40, columns * 33, rows * 31 };
 	SDL_SetRenderDrawColor(sdl.gRenderer, 91, 152, 219, 150);
 	SDL_RenderFillRect(sdl.gRenderer, &fillRect);
 }
@@ -252,6 +274,20 @@ void board::moveCheackbox(SDL_Event & e)
 
 		case SDLK_LEFT:
 			moveLeft();
+			break;
+
+		case SDLK_SPACE:
+			changePuyo();
+			break;
+
+		case SDLK_DOWN:
+			bool isMoveDown = true;
+
+			while (isMoveDown)
+			{
+				isMoveDown = moveDown();
+			}
+
 			break;
 		}
 	}
@@ -1325,14 +1361,22 @@ bool board::checkDeletePuyo()
 
 					moveDown();
 
-					nivel = nivel + 1;
-					printf("\nNivel: %d", nivel);
+					combos = combos + 1;
+					
+					system("CLS");
+					printf("\n Hello Welcome to Puyo Puyo \n\n");
+					printf("Combos: %d \n\n", combos);
 
 					timeDelay = timeDelay - 40;
 					success = true;
 				}
 			}
 		}
+	}
+
+	if (success)
+	{
+		//flipBoard();
 	}
 
 	return success;
@@ -1431,4 +1475,77 @@ bool board::isVisited(int newX, int newY)
 	}
 
 	return success;
+}
+
+void board::flipBoard()
+{
+	for (int y = 0; y < rows; y++)
+	{
+		for (int x = 0; x < columns; x++)
+		{
+			cheackboxsAux[rows - 1 - y][columns - 1 - x].color = cheackboxs[y][x].color;
+			cheackboxsAux[rows - 1 - y][columns - 1 - x].isBase = cheackboxs[y][x].isBase;
+			cheackboxsAux[rows - 1 - y][columns - 1 - x].isFree = cheackboxs[y][x].isFree;
+			cheackboxsAux[rows - 1 - y][columns - 1 - x].isSelected = cheackboxs[y][x].isSelected;
+			cheackboxsAux[rows - 1 - y][columns - 1 - x].sprite = cheackboxs[y][x].sprite;
+		}
+	}
+
+	for (int y = 0; y < rows; y++)
+	{
+		for (int x = 0; x < columns; x++)
+		{
+			//cheackboxs[y][x] = cheackboxsAux[y][x];
+
+			cheackboxs[y][x].color = cheackboxsAux[y][x].color;
+			cheackboxs[y][x].isBase = cheackboxsAux[y][x].isBase;
+			cheackboxs[y][x].isFree = cheackboxsAux[y][x].isFree;
+			cheackboxs[y][x].isSelected = cheackboxsAux[y][x].isSelected;
+			cheackboxs[y][x].sprite = cheackboxsAux[y][x].sprite;
+		}
+	}
+
+	changeDown = !changeDown;
+
+	updateSprite();
+
+}
+
+void board::changePuyo()
+{
+	int colorPuyoBase;
+	int colorPuyo;
+	
+	for (int y = 0; y < rows; y++)
+	{
+		for (int x = 0; x < columns; x++)
+		{
+			if (cheackboxs[y][x].isBase)
+			{
+				colorPuyoBase = cheackboxs[y][x].color;
+			}
+			else if (cheackboxs[y][x].isSelected)
+			{
+				colorPuyo = cheackboxs[y][x].color;
+			}
+		}
+	}
+
+	for (int y = 0; y < rows; y++)
+	{
+		for (int x = 0; x < columns; x++)
+		{
+			if (cheackboxs[y][x].isBase)
+			{
+				cheackboxs[y][x].color = colorPuyo;
+			}
+			else if (cheackboxs[y][x].isSelected)
+			{
+				cheackboxs[y][x].color = colorPuyoBase;
+			}
+		}
+	}
+
+	//updateSprite();
+
 }
