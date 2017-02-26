@@ -10,6 +10,7 @@ public:
 	~board();
 
 	int m_timestamp;
+	int m_timestampPC;
 
 	int rows;
 	int columns;
@@ -24,11 +25,16 @@ public:
 	StructDeletesPuyos deletesPuyos[10];
 
 	cheackbox cheackboxs[16][11];
+	cheackbox cheackboxs2[16][11];
+
 	cheackbox cheackboxsAux[16][11];
 	loadSDL sdl;
 
 	int timeDelay;
+	int timeDelayPC;
+
 	int combos;
+	int combosPC;
 
 	bool changeDown;
 
@@ -44,20 +50,35 @@ public:
 	void moveCheackbox(SDL_Event &e);
 
 	void turnPuyo();
+	void turnPuyoPC();
+
 	void moveRight();
+	void moveRightPC();
+
 	void moveLeft();
+	void moveLeftPC();
 
 	bool moveDown();
 
+	bool moveDownPC();
+
 	void newPuyos();
+
+	void newPuyosPC();
 
 	bool endGame();
 
 	bool updateSprite();
 
+	bool updateSpritePC();
+
 	bool checkDeletePuyo();
 
+	bool checkDeletePuyoPC();
+
 	void deletePuyos(int x, int y);
+
+	void deletePuyosPC(int x, int y);
 
 	bool isVisited(int x, int y);
 
