@@ -1,4 +1,4 @@
 ﻿  board.cpp
-c:\users\elche\desktop\test\game\test\board.cpp(42): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
-  TEST.vcxproj -> C:\Users\elche\Desktop\TEST\game\Debug\TEST.exe
-  TEST.vcxproj -> C:\Users\elche\Desktop\TEST\game\Debug\TEST.pdb (Partial PDB)
+c:\users\elche\desktop\gameloft cambios\game\test\board.cpp(45): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+  TEST.vcxproj -> C:\Users\elche\Desktop\Gameloft Cambios\game\Debug\TEST.exe
+  TEST.vcxproj -> C:\Users\elche\Desktop\Gameloft Cambios\game\Debug\TEST.pdb (Partial PDB)

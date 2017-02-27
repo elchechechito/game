@@ -12,6 +12,8 @@ public:
 	int m_timestamp;
 	int m_timestampPC;
 
+	int gameTime;
+
 	int rows;
 	int columns;
 
@@ -49,35 +51,19 @@ public:
 
 	void moveCheackbox(SDL_Event &e);
 
-	void turnPuyo();
-	void turnPuyoPC();
-
-	void moveRight();
-	void moveRightPC();
-
-	void moveLeft();
-	void moveLeftPC();
-
-	bool moveDown();
-
-	bool moveDownPC();
-
-	void newPuyos();
-
-	void newPuyosPC();
-
+	void turnPuyo(bool player);
+	void moveRight(bool player);
+	void moveLeft(bool player);
+	bool moveDown(bool player);
+	void newPuyos(bool player);
+	
 	bool endGame();
 
-	bool updateSprite();
-
-	bool updateSpritePC();
+	bool updateSprite(bool player);
 
 	bool checkDeletePuyo();
-
 	bool checkDeletePuyoPC();
-
 	void deletePuyos(int x, int y);
-
 	void deletePuyosPC(int x, int y);
 
 	bool isVisited(int x, int y);
