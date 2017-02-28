@@ -6,10 +6,13 @@ board::board()
 {
 	m_timestamp = 0;
 	m_timestampPC = 0;
-	
-	gameTime = 0;
 
 	changeDown = false;
+
+	timeDelay = 500;
+	timeDelayPC = 500;
+	combos = 0;
+	combosPC = 0;
 
 	rows = 16;
 	columns = 11;
@@ -28,6 +31,7 @@ board::board()
 			cheackboxs[y][x].isSelected = false;
 			cheackboxs[y][x].isBase = false;
 			cheackboxs[y][x].color = 10;
+			cheackboxs[y][x].isGhost = false;
 
 			//board 2
 			cheackboxs2[y][x].box.x = 450 + (33 * x);
@@ -39,9 +43,20 @@ board::board()
 			cheackboxs2[y][x].isSelected = false;
 			cheackboxs2[y][x].isBase = false;
 			cheackboxs2[y][x].color = 10;
+			cheackboxs[y][x].isGhost = false;
 		}
 	}
 
+	//add puyo ghost
+	cheackboxs[rows - 1][columns - 1].color = 10;
+	cheackboxs[rows - 1][columns - 1].isBase = false;
+	cheackboxs[rows - 1][columns - 1].isSelected = false;
+	cheackboxs[rows - 1][columns - 1].isFree = true;
+	cheackboxs[rows - 1][columns - 1].isGhost = true;
+	cheackboxs[rows - 1][columns - 1].sprite = 0;
+	
+	cheackboxs[rows - 1][columns - 1].auxPosition.color = 10;
+	
 	srand(time(0));
 
 	for (int i = 0; i < 3; i++)
@@ -54,7 +69,7 @@ board::board()
 		cheackboxs[randomY][randomX].isSelected = false;
 		cheackboxs[randomY][randomX].isBase = false;
 		cheackboxs[randomY][randomX].color = 6;
-
+		
 		//board 2
 		cheackboxs2[randomY][randomX].isFree = false;
 		cheackboxs2[randomY][randomX].isSelected = false;
@@ -62,11 +77,6 @@ board::board()
 		cheackboxs2[randomY][randomX].color = 6;
 
 	}
-
-	timeDelay = 500;
-	timeDelayPC = 500;
-	combos = 0;
-	combosPC = 0;
 }
 
 board::~board()
@@ -178,6 +188,8 @@ void board::startGameBoard()
 						
 						//move down or up all piece
 						bool moved = moveDown(true);
+
+						puyoGhostAttack();
 
 						if (!moved)
 						{
@@ -336,8 +348,20 @@ void board::printBoard()
 				case 6:
 					puyoClip = &sdl.badPuyoSprite;
 					break;
+
+				case 7:
+					puyoClip = &sdl.ghostPuyoSprite;
+					break;
+
 				}
 
+				sdl.render(cheackboxs[y][x].box.x, cheackboxs[y][x].box.y, sdl.gTexturePuyo, puyoClip, false);
+			}
+
+			if (cheackboxs[y][x].isGhost)
+			{
+				SDL_Rect* puyoClip = NULL;
+				puyoClip = &sdl.ghostPuyoSprite;
 				sdl.render(cheackboxs[y][x].box.x, cheackboxs[y][x].box.y, sdl.gTexturePuyo, puyoClip, false);
 			}
 
@@ -2044,5 +2068,243 @@ void board::changePuyo()
 	}
 
 	//updateSprite();
+
+}
+
+void board::puyoGhostAttack()
+{
+	bool puyoGhostAttack = false;
+
+	for (int y = rows -1; y > -1; y--)
+	{
+		for (int x = columns -1; x > -1; x--)
+		{
+			if (cheackboxs[y][x].isGhost)
+			{
+				//cheack if have puyo above
+				if (!cheackboxs[y -1][x].isFree && y != 0)
+				{
+					cheackboxs[y][x].color = cheackboxs[y -1][x].color;
+					
+					//delete array with value to delete puyos
+					for (int i = 0; i < 10; i++)
+					{
+						deletesPuyos[i].x = 0;
+						deletesPuyos[i].y = 0;
+						deletesPuyos[i].empty = true;
+						deletesPuyos[i].visited = false;
+					}
+
+					deletesPuyos[0].x = x;
+					deletesPuyos[0].y = y;
+					deletesPuyos[0].empty = false;
+					deletesPuyos[0].visited = true;
+
+					deletePuyos(y, x);
+
+					if (!deletesPuyos[3].empty)
+					{
+						//delete puyos
+						for (int i = 0; i < 10; i++)
+						{
+							if (!deletesPuyos[i].empty)
+							{
+								cheackboxs[deletesPuyos[i].y][deletesPuyos[i].x].isFree = true;
+								cheackboxs[deletesPuyos[i].y][deletesPuyos[i].x].isBase = false;
+								cheackboxs[deletesPuyos[i].y][deletesPuyos[i].x].isSelected = false;
+							}
+						}
+						puyoGhostAttack = true;
+					}
+					else
+					{
+						cheackboxs[y][x].color = 7;
+					}
+				}
+
+				//cheack if have puyo down
+				else if (!cheackboxs[y +1][x].isFree && y != rows -1)
+				{
+					cheackboxs[y][x].color = cheackboxs[y +1][x].color;
+
+					//delete array with value to delete puyos
+					for (int i = 0; i < 10; i++)
+					{
+						deletesPuyos[i].x = 0;
+						deletesPuyos[i].y = 0;
+						deletesPuyos[i].empty = true;
+						deletesPuyos[i].visited = false;
+					}
+
+					deletesPuyos[0].x = x;
+					deletesPuyos[0].y = y;
+					deletesPuyos[0].empty = false;
+					deletesPuyos[0].visited = true;
+
+					deletePuyos(y, x);
+
+					if (!deletesPuyos[3].empty)
+					{
+						//delete puyos
+						for (int i = 0; i < 10; i++)
+						{
+							if (!deletesPuyos[i].empty)
+							{
+								cheackboxs[deletesPuyos[i].y][deletesPuyos[i].x].isFree = true;
+								cheackboxs[deletesPuyos[i].y][deletesPuyos[i].x].isBase = false;
+								cheackboxs[deletesPuyos[i].y][deletesPuyos[i].x].isSelected = false;
+							}
+						}
+						puyoGhostAttack = true;
+					}
+					else
+					{
+						cheackboxs[y][x].color = 7;
+					}
+				}
+
+				//cheack if have puyo on the left
+				else if (!cheackboxs[y][x -1].isFree && x != 0)
+				{
+					cheackboxs[y][x].color = cheackboxs[y][x -1].color;
+
+					//delete array with value to delete puyos
+					for (int i = 0; i < 10; i++)
+					{
+						deletesPuyos[i].x = 0;
+						deletesPuyos[i].y = 0;
+						deletesPuyos[i].empty = true;
+						deletesPuyos[i].visited = false;
+					}
+
+					deletesPuyos[0].x = x;
+					deletesPuyos[0].y = y;
+					deletesPuyos[0].empty = false;
+					deletesPuyos[0].visited = true;
+
+					deletePuyos(y, x);
+
+					if (!deletesPuyos[3].empty)
+					{
+						//delete puyos
+						for (int i = 0; i < 10; i++)
+						{
+							if (!deletesPuyos[i].empty)
+							{
+								cheackboxs[deletesPuyos[i].y][deletesPuyos[i].x].isFree = true;
+								cheackboxs[deletesPuyos[i].y][deletesPuyos[i].x].isBase = false;
+								cheackboxs[deletesPuyos[i].y][deletesPuyos[i].x].isSelected = false;
+							}
+						}
+						puyoGhostAttack = true;
+					}
+					else
+					{
+						cheackboxs[y][x].color = 7;
+					}
+				}
+
+				//cheack if have puyo on the right
+				else if (!cheackboxs[y][x +1].isFree && x != columns -1)
+				{
+					cheackboxs[y][x].color = cheackboxs[y][x +1].color;
+
+					//delete array with value to delete puyos
+					for (int i = 0; i < 10; i++)
+					{
+						deletesPuyos[i].x = 0;
+						deletesPuyos[i].y = 0;
+						deletesPuyos[i].empty = true;
+						deletesPuyos[i].visited = false;
+					}
+
+					deletesPuyos[0].x = x;
+					deletesPuyos[0].y = y;
+					deletesPuyos[0].empty = false;
+					deletesPuyos[0].visited = true;
+
+					deletePuyos(y, x);
+
+					if (!deletesPuyos[3].empty)
+					{
+						//delete puyos
+						for (int i = 0; i < 10; i++)
+						{
+							if (!deletesPuyos[i].empty)
+							{
+								cheackboxs[deletesPuyos[i].y][deletesPuyos[i].x].isFree = true;
+								cheackboxs[deletesPuyos[i].y][deletesPuyos[i].x].isBase = false;
+								cheackboxs[deletesPuyos[i].y][deletesPuyos[i].x].isSelected = false;
+							}
+						}
+						puyoGhostAttack = true;
+					}
+					else
+					{
+						cheackboxs[y][x].color = 7;
+					}
+				}
+			
+				//move puyoGhost
+				if (puyoGhostAttack)
+				{
+					if (x == 0)
+					{
+						if (y == 0)
+						{
+							cheackboxs[y][x].isGhost = false;
+							cheackboxs[rows - 1][columns - 1].isGhost = true;
+							cheackboxs[rows - 1][columns - 1].auxPosition.color = cheackboxs[rows -1][columns - 1].color;
+						}
+						else
+						{
+							cheackboxs[y][x].isGhost = false;
+							cheackboxs[y - 1][columns - 1].isGhost = true;
+							cheackboxs[y - 1][columns - 1].auxPosition.color = cheackboxs[y -1][columns - 1].color;
+						}
+					}
+					else
+					{
+						cheackboxs[y][x].isGhost = false;
+						cheackboxs[y][x - 1].isGhost = true;
+						cheackboxs[y][x - 1].auxPosition.color = cheackboxs[y][x - 1].color;						
+					}
+					
+				}
+				else
+				{
+					if (x == 0)
+					{
+						if (y == 0)
+						{
+							cheackboxs[y][x].isGhost = false;
+							cheackboxs[rows -1][columns -1].isGhost = true;
+
+							cheackboxs[y][x].color = cheackboxs[y][x].auxPosition.color;
+							cheackboxs[rows -1][columns -1].auxPosition.color = cheackboxs[rows -1][columns -1].color;
+						}
+						else
+						{
+							cheackboxs[y][x].isGhost = false;
+							cheackboxs[y - 1][columns - 1].isGhost = true;
+
+							cheackboxs[y][x].color = cheackboxs[y][x].auxPosition.color;
+							cheackboxs[y - 1][columns - 1].auxPosition.color = cheackboxs[y -1][columns - 1].color;
+						}
+					}
+					else
+					{
+						cheackboxs[y][x].isGhost = false;
+						cheackboxs[y][x - 1].isGhost = true;
+
+						cheackboxs[y][x].color = cheackboxs[y][x].auxPosition.color;
+						cheackboxs[y][x - 1].auxPosition.color = cheackboxs[y][x - 1].color;
+					}
+				}
+
+				break;
+			}
+		}
+	}
 
 }

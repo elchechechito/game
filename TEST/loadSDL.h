@@ -51,6 +51,7 @@ public:
 	SDL_Rect purplePuyoSprite[17];
 	SDL_Rect pinkPuyoSprite[17];
 	SDL_Rect badPuyoSprite;
+	SDL_Rect ghostPuyoSprite;
 
 	//Texture to load background
 	Texture gTextureBackground;

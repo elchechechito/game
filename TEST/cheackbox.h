@@ -10,12 +10,18 @@ public:
 	SDL_Rect box;
 
 	bool isFree;
-
 	int color;
 	int sprite;
-
 	bool isSelected;
 	bool isBase;
+
+	struct AuxEstructure {
+		int color;
+	};
+
+	bool isGhost;
+
+	AuxEstructure auxPosition;
 
 };
 

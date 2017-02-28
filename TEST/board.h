@@ -12,8 +12,6 @@ public:
 	int m_timestamp;
 	int m_timestampPC;
 
-	int gameTime;
-
 	int rows;
 	int columns;
 
@@ -71,5 +69,7 @@ public:
 	void flipBoard();
 
 	void changePuyo();
+
+	void puyoGhostAttack();
 
 };
