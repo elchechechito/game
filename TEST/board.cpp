@@ -32,6 +32,7 @@ board::board()
 			cheackboxs[y][x].isBase = false;
 			cheackboxs[y][x].color = 10;
 			cheackboxs[y][x].isGhost = false;
+			cheackboxs[y][x].auxPositionColor = 10;
 
 			//board 2
 			cheackboxs2[y][x].box.x = 450 + (33 * x);
@@ -48,14 +49,8 @@ board::board()
 	}
 
 	//add puyo ghost
-	cheackboxs[rows - 1][columns - 1].color = 10;
-	cheackboxs[rows - 1][columns - 1].isBase = false;
-	cheackboxs[rows - 1][columns - 1].isSelected = false;
-	cheackboxs[rows - 1][columns - 1].isFree = true;
-	cheackboxs[rows - 1][columns - 1].isGhost = true;
-	cheackboxs[rows - 1][columns - 1].sprite = 0;
-	
-	cheackboxs[rows - 1][columns - 1].auxPosition.color = 10;
+	cheackboxs[rows - 1][columns - 1].isGhost = true;	
+	cheackboxs[rows - 1][columns - 1].auxPositionColor = 10;
 	
 	srand(time(0));
 
@@ -2254,20 +2249,20 @@ void board::puyoGhostAttack()
 						{
 							cheackboxs[y][x].isGhost = false;
 							cheackboxs[rows - 1][columns - 1].isGhost = true;
-							cheackboxs[rows - 1][columns - 1].auxPosition.color = cheackboxs[rows -1][columns - 1].color;
+							cheackboxs[rows - 1][columns - 1].auxPositionColor = cheackboxs[rows -1][columns - 1].color;
 						}
 						else
 						{
 							cheackboxs[y][x].isGhost = false;
 							cheackboxs[y - 1][columns - 1].isGhost = true;
-							cheackboxs[y - 1][columns - 1].auxPosition.color = cheackboxs[y -1][columns - 1].color;
+							cheackboxs[y - 1][columns - 1].auxPositionColor = cheackboxs[y -1][columns - 1].color;
 						}
 					}
 					else
 					{
 						cheackboxs[y][x].isGhost = false;
 						cheackboxs[y][x - 1].isGhost = true;
-						cheackboxs[y][x - 1].auxPosition.color = cheackboxs[y][x - 1].color;						
+						cheackboxs[y][x - 1].auxPositionColor = cheackboxs[y][x - 1].color;						
 					}
 					
 				}
@@ -2280,16 +2275,16 @@ void board::puyoGhostAttack()
 							cheackboxs[y][x].isGhost = false;
 							cheackboxs[rows -1][columns -1].isGhost = true;
 
-							cheackboxs[y][x].color = cheackboxs[y][x].auxPosition.color;
-							cheackboxs[rows -1][columns -1].auxPosition.color = cheackboxs[rows -1][columns -1].color;
+							cheackboxs[y][x].color = cheackboxs[y][x].auxPositionColor;
+							cheackboxs[rows -1][columns -1].auxPositionColor = cheackboxs[rows -1][columns -1].color;
 						}
 						else
 						{
 							cheackboxs[y][x].isGhost = false;
 							cheackboxs[y - 1][columns - 1].isGhost = true;
 
-							cheackboxs[y][x].color = cheackboxs[y][x].auxPosition.color;
-							cheackboxs[y - 1][columns - 1].auxPosition.color = cheackboxs[y -1][columns - 1].color;
+							cheackboxs[y][x].color = cheackboxs[y][x].auxPositionColor;
+							cheackboxs[y - 1][columns - 1].auxPositionColor = cheackboxs[y -1][columns - 1].color;
 						}
 					}
 					else
@@ -2297,8 +2292,8 @@ void board::puyoGhostAttack()
 						cheackboxs[y][x].isGhost = false;
 						cheackboxs[y][x - 1].isGhost = true;
 
-						cheackboxs[y][x].color = cheackboxs[y][x].auxPosition.color;
-						cheackboxs[y][x - 1].auxPosition.color = cheackboxs[y][x - 1].color;
+						cheackboxs[y][x].color = cheackboxs[y][x].auxPositionColor;
+						cheackboxs[y][x - 1].auxPositionColor = cheackboxs[y][x - 1].color;
 					}
 				}
 

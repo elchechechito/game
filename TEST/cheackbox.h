@@ -15,13 +15,8 @@ public:
 	bool isSelected;
 	bool isBase;
 
-	struct AuxEstructure {
-		int color;
-	};
-
 	bool isGhost;
-
-	AuxEstructure auxPosition;
+	int auxPositionColor;	
 
 };
 

@@ -4,7 +4,6 @@
 
 cheackbox::cheackbox()
 {
-	auxPosition.color = 10;
 }
 
 
